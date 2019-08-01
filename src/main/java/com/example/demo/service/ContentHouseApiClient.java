@@ -1,49 +1,28 @@
-package com.example.demo.controller;
+package com.example.demo.service;
 
-import com.example.demo.dao.CategoryTreeDAO;
 import com.example.demo.entity.Wrapper.JsonWrapper;
 import com.example.demo.entity.Wrapper.PageItems;
-import com.example.demo.service.ContentHouseApiClient;
-import com.example.demo.service.ProductService.ProductService;
-import com.example.demo.service.SubCategoryService.SubCategoryService;
 import com.example.demo.service.categoryService.CategoryService;
-
+import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 
-@Controller
-public class MainController {
-    @Autowired
-    ContentHouseApiClient houseApiClient;
+@Component
+@Data
+public class ContentHouseApiClient {
 
- /*   private static String url_1 = "http://content-house.pro/cs/api/export/categories/70037?login=lego&password=e7ddaob3&format=json";
+    private static String url_1 = "http://content-house.pro/cs/api/export/categories/70037?login=lego&password=e7ddaob3&format=json";
     private static String url_2 = "http://content-house.pro/cs/api/export/categories/70037/children?login=lego&password=e7ddaob3&format=json";
     private static String url_3 = "http://content-house.pro/cs/api/export/categories/70038/products?login=lego&password=e7ddaob3&format=json";
 
-    @Autowired
-    CategoryService categoryService;
 
+    private CategoryService categoryService;
+    public void GetData(){
+        RestTemplate restTemplate = new RestTemplate();
 
-
-    RestTemplate restTemplate = new RestTemplate(); */
-
-    @GetMapping("/")
-    public String index(Model model){
-        model.addAttribute("message","Hello world!!");
-       // model.addAttribute("category", categoryService.findAll());
-        houseApiClient.GetData();
-
-
-        return "index";
-    }
-
-/*    @GetMapping("/getjson")
-    public  String getJson() throws Exception {
         List<PageItems> category = restTemplate.getForObject(url_1, JsonWrapper.class).getPage().getPageItems();
         List<PageItems> subCategory = restTemplate.getForObject(url_2, JsonWrapper.class).getPage().getPageItems();
         List<PageItems> productList = restTemplate.getForObject(url_3, JsonWrapper.class).getPage().getPageItems();
@@ -64,8 +43,12 @@ public class MainController {
             }
             categoryService.save(items);
         }
+    }
+
+    @Autowired
+    public ContentHouseApiClient(CategoryService categoryService){
+        this.categoryService = categoryService;
+    }
 
 
-        return "redirect:/";
-    } */
 }

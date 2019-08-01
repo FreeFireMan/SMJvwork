@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 @Service
 @Transactional
-public class CategoryImpl implements CategoryService {
+public class CategoryServiceImpl implements CategoryService {
     @Autowired
     CategoryDAO categoryDAO;
     @Override
@@ -40,7 +40,8 @@ public class CategoryImpl implements CategoryService {
                     item.isLeaf(),
                     item.getProductsCount(),
                     item.getWeight(),
-                    item.getParentId()
+                    item.getParentId(),
+                    item.getChildren()
             ));
         }
     }

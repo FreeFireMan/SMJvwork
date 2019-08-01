@@ -5,9 +5,18 @@
     <title>Title</title>
 </head>
 <body>
-<h1><span th:text="'Hello, ' + ${message}"></span></h1>
+<h1><span th:text="${message}"></span></h1>
 <form action="/getjson">
     <input type="submit">
 </form>
+
+<p th:each="item : ${category}" th:text="${item.getName()}"></p>
+<br>
+<tr th:each="item : ${category}">
+    <td th:text="${item.getChildren()}"></td>
+</tr>
+
+
+
 </body>
 </html>

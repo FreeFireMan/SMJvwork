@@ -5,6 +5,7 @@ import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Document
@@ -15,7 +16,7 @@ public class Category {
     private String name;
     private String categoryId;
     private String path;
-    private List<PageItems> children;
+    private List<PageItems> children; //subCategory
     private boolean leaf;
     private String productsCount;
     private String weight;
@@ -41,5 +42,15 @@ public class Category {
         this.parentId = parentId;
         this.children = children;
 
+    }
+
+    public List<String> getListSubCategory()
+    {
+         ArrayList<String> subCategory = new ArrayList<>();
+         for (PageItems child : this.getChildren()) {
+            subCategory.add(child.getName());
+        }
+
+        return subCategory;
     }
 }

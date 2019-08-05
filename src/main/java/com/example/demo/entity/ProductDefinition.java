@@ -6,7 +6,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document
 @Data
-public class Product {
+public class ProductDefinition {
+
     @Id
     private String id;
     private String lastUpdated;
@@ -33,7 +34,32 @@ public class Product {
     private String model_union;
     private String ean;
 
-    public Product(String id, String lastUpdated, String name, String shortName, String longName, String baseImage, String article, String manufacturer, String annotation, String categoryIdStr, String categoryId, String partNumber, String brand, String family, String series, String model, boolean hasImage, boolean hasVideo, boolean has360View, boolean hasInstructions, boolean hasMarketText, String model_color, String model_union, String ean) {
+    public ProductDefinition(
+        String id,
+        String lastUpdated,
+        String name,
+        String shortName,
+        String longName,
+        String baseImage,
+        String article,
+        String manufacturer,
+        String annotation,
+        String categoryIdStr,
+        String categoryId,
+        String partNumber,
+        String brand,
+        String family,
+        String series,
+        String model,
+        boolean hasImage,
+        boolean hasVideo,
+        boolean has360View,
+        boolean hasInstructions,
+        boolean hasMarketText,
+        String model_color,
+        String model_union,
+        String ean) {
+
         this.id = id;
         this.lastUpdated = lastUpdated;
         this.name = name;

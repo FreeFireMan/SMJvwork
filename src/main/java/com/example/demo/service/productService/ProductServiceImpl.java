@@ -1,7 +1,7 @@
 package com.example.demo.service.productService;
 
 import com.example.demo.dao.ProductDAO;
-import com.example.demo.entity.Product;
+import com.example.demo.entity.ProductDefinition;
 import com.example.demo.contentHouse.api.PageItem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,24 +17,24 @@ public class ProductServiceImpl implements ProductService {
 
 
     @Override
-    public void save(Product product) {
+    public void save(ProductDefinition product) {
         if (product!=null)productDAO.save(product);
     }
 
     @Override
-    public List<Product> findAll() {
+    public List<ProductDefinition> findAll() {
         return productDAO.findAll();
     }
 
     @Override
-    public void save(List<Product> product) {
+    public void save(List<ProductDefinition> product) {
         if (product!=null)productDAO.saveAll(product);
     }
 
     @Override
     public void save(PageItem item) {
         if (item!=null){
-            productDAO.save(new Product(
+            productDAO.save(new ProductDefinition(
                     item.getId(),
                     item.getLastUpdated(),
                     item.getName(),

@@ -2,9 +2,8 @@ package com.example.demo.contentHouse;
 
 import com.example.demo.contentHouse.api.ContentHouseResponse;
 import com.example.demo.contentHouse.api.PageItem;
-import com.example.demo.service.productService.ProductService;
-import com.example.demo.service.subCategoryService.SubCategoryService;
 import com.example.demo.service.categoryService.CategoryService;
+import com.example.demo.service.productService.ProductService;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -29,7 +28,6 @@ public class ContentHouseApiClient {
 
 
     private CategoryService categoryService;
-    private SubCategoryService subCategoryService;
     private ProductService productService;
 
     public void GetData(){

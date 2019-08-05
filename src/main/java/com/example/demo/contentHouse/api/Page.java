@@ -1,4 +1,4 @@
-package com.example.demo.entity.Wrapper;
+package com.example.demo.contentHouse.api;
 
 import lombok.Data;
 

@@ -1,12 +1,7 @@
-package com.example.demo.service.ProductService;
+package com.example.demo.service.productService;
 
-import com.example.demo.entity.Category;
 import com.example.demo.entity.Product;
-import com.example.demo.entity.Wrapper.PageItems;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
-
+import com.example.demo.contentHouse.api.PageItems;
 
 import java.util.List;
 

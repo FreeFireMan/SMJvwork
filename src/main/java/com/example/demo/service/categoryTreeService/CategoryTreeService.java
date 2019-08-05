@@ -1,7 +1,7 @@
 package com.example.demo.service.categoryTreeService;
 
 import com.example.demo.entity.Category;
-import com.example.demo.entity.Wrapper.PageItems;
+import com.example.demo.contentHouse.api.PageItems;
 
 import java.util.List;
 

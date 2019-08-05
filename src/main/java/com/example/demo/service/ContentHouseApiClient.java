@@ -2,6 +2,8 @@ package com.example.demo.service;
 
 import com.example.demo.entity.Wrapper.JsonWrapper;
 import com.example.demo.entity.Wrapper.PageItems;
+import com.example.demo.service.ProductService.ProductService;
+import com.example.demo.service.ProductService.ProductServiceImpl;
 import com.example.demo.service.SubCategoryService.SubCategoryService;
 import com.example.demo.service.SubCategoryService.SubCategoryServiceImpl;
 import com.example.demo.service.categoryService.CategoryService;
@@ -29,36 +31,54 @@ public class ContentHouseApiClient {
 
 
     private CategoryService categoryService;
-    private SubCategoryServiceImpl subCategoryService;
+    private SubCategoryService subCategoryService;
+    private ProductService productService;
+
     public void GetData(){
         RestTemplate restTemplate = new RestTemplate();
 
+        List<PageItems> productList = restTemplate.getForObject(url_3, JsonWrapper.class).getPage().getPageItems();
         List<PageItems> category = restTemplate.getForObject(url_1, JsonWrapper.class).getPage().getPageItems();
         List<PageItems> subCategory = restTemplate.getForObject(url_2, JsonWrapper.class).getPage().getPageItems();
-        List<PageItems> productList = restTemplate.getForObject(url_3, JsonWrapper.class).getPage().getPageItems();
         System.out.println(productList);
     //    subCategoryService.save(subCategory);
-        for (PageItems items: category ) {
+//        for (PageItems items: category ) {
+//
+//            for (PageItems sub: subCategory ) {
+//                for (PageItems prod: productList) {
+//                    if (sub.getId().equals(prod.getCategoryId())){
+//                        sub.setOneChildren(prod);
+//                    }
+//
+//                }Л
+//                if (items.getId().equals(sub.getParentId())){
+//                    items.setOneChildren(sub);
+//                }
+//
+//            }
+//            categoryService.save(items);
+        for (PageItems item: subCategory) {
+            categoryService.save(item);
 
-            for (PageItems sub: subCategory ) {
-                for (PageItems prod: productList) {
-                    if (sub.getId().equals(prod.getCategoryId())){
-                        sub.setOneChildren(prod);
-                    }
-
-                }
-                if (items.getId().equals(sub.getParentId())){
-                    items.setOneChildren(sub);
-                }
+        }
+        try {
+            for (PageItems item: productList) {
+                System.out.println(item);
+                productService.save(item);
 
             }
-            categoryService.save(items);
+        } catch (Exception e){
+            System.out.println("Product save error" + e);
         }
+//        }
+
     }
 
     @Autowired
-    public ContentHouseApiClient(CategoryService categoryService){
+    public ContentHouseApiClient(CategoryService categoryService,ProductService productService){
+
         this.categoryService = categoryService;
+        this.productService = productService;
     }
 
 

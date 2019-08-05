@@ -1,7 +1,6 @@
 package com.example.demo.service.ProductService;
 
 import com.example.demo.dao.ProductDAO;
-import com.example.demo.entity.Category;
 import com.example.demo.entity.Product;
 import com.example.demo.entity.Wrapper.PageItems;
 import org.springframework.beans.factory.annotation.Autowired;

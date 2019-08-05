@@ -1,8 +1,7 @@
-package com.example.demo.service.SubCategoryService;
+package com.example.demo.service.subCategoryService;
 
 import com.example.demo.entity.SubCategory;
-import com.example.demo.entity.Wrapper.PageItems;
-import org.springframework.stereotype.Service;
+import com.example.demo.contentHouse.api.PageItems;
 
 import java.util.List;
 

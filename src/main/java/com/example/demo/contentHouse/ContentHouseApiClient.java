@@ -1,11 +1,9 @@
-package com.example.demo.service;
+package com.example.demo.contentHouse;
 
-import com.example.demo.entity.Wrapper.JsonWrapper;
-import com.example.demo.entity.Wrapper.PageItems;
-import com.example.demo.service.ProductService.ProductService;
-import com.example.demo.service.ProductService.ProductServiceImpl;
-import com.example.demo.service.SubCategoryService.SubCategoryService;
-import com.example.demo.service.SubCategoryService.SubCategoryServiceImpl;
+import com.example.demo.contentHouse.api.ContentHouseResponse;
+import com.example.demo.contentHouse.api.PageItems;
+import com.example.demo.service.productService.ProductService;
+import com.example.demo.service.subCategoryService.SubCategoryService;
 import com.example.demo.service.categoryService.CategoryService;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,9 +35,9 @@ public class ContentHouseApiClient {
     public void GetData(){
         RestTemplate restTemplate = new RestTemplate();
 
-        List<PageItems> productList = restTemplate.getForObject(url_3, JsonWrapper.class).getPage().getPageItems();
-        List<PageItems> category = restTemplate.getForObject(url_1, JsonWrapper.class).getPage().getPageItems();
-        List<PageItems> subCategory = restTemplate.getForObject(url_2, JsonWrapper.class).getPage().getPageItems();
+        List<PageItems> productList = restTemplate.getForObject(url_3, ContentHouseResponse.class).getPage().getPageItems();
+        List<PageItems> category = restTemplate.getForObject(url_1, ContentHouseResponse.class).getPage().getPageItems();
+        List<PageItems> subCategory = restTemplate.getForObject(url_2, ContentHouseResponse.class).getPage().getPageItems();
         System.out.println(productList);
     //    subCategoryService.save(subCategory);
 //        for (PageItems items: category ) {

@@ -1,8 +1,8 @@
-package com.example.demo.service.SubCategoryService;
+package com.example.demo.service.subCategoryService;
 
 import com.example.demo.dao.SubCategoryDAO;
 import com.example.demo.entity.SubCategory;
-import com.example.demo.entity.Wrapper.PageItems;
+import com.example.demo.contentHouse.api.PageItems;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

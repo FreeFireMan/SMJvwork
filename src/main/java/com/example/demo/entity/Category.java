@@ -1,6 +1,6 @@
 package com.example.demo.entity;
 
-import com.example.demo.entity.Wrapper.PageItems;
+import com.example.demo.contentHouse.api.PageItems;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;

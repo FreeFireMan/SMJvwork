@@ -2,7 +2,7 @@ package com.example.demo.service.subCategoryService;
 
 import com.example.demo.dao.SubCategoryDAO;
 import com.example.demo.entity.SubCategory;
-import com.example.demo.contentHouse.api.PageItems;
+import com.example.demo.contentHouse.api.PageItem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,7 +31,7 @@ public class SubCategoryServiceImpl implements SubCategoryService {
     }
 
     @Override
-    public void save(PageItems item) {
+    public void save(PageItem item) {
         if (item!=null) {
             subCategoryDAO.save(new SubCategory(
                     item.getId(),

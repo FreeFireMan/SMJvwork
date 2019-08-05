@@ -1,7 +1,7 @@
 package com.example.demo.service.categoryService;
 
 import com.example.demo.entity.Category;
-import com.example.demo.contentHouse.api.PageItems;
+import com.example.demo.contentHouse.api.PageItem;
 
 import java.util.List;
 
@@ -10,5 +10,5 @@ public interface CategoryService {
     List<Category> findAll();
     void save(List<Category> category);
 
-    void save(PageItems items);
+    void save(PageItem items);
 }

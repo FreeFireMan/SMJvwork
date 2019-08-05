@@ -12,13 +12,13 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 
-public class PageItems {
+public class PageItem {
     @Id
     private String id;
     private String name;
     private String categoryId;
     private String path;
-    private List<PageItems> children;
+    private List<PageItem> children;
     private boolean leaf;
     private String productsCount;
     private String weight;
@@ -45,7 +45,7 @@ public class PageItems {
     private String model_union;
     private String ean;
 
-    public void setOneChildren(PageItems children) {
+    public void setOneChildren(PageItem children) {
         this.children.add(children);
     }
 }

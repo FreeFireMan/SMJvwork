@@ -1,7 +1,7 @@
 package com.example.demo.contentHouse;
 
 import com.example.demo.contentHouse.api.ContentHouseResponse;
-import com.example.demo.contentHouse.api.PageItems;
+import com.example.demo.contentHouse.api.PageItem;
 import com.example.demo.service.productService.ProductService;
 import com.example.demo.service.subCategoryService.SubCategoryService;
 import com.example.demo.service.categoryService.CategoryService;
@@ -35,9 +35,9 @@ public class ContentHouseApiClient {
     public void GetData(){
         RestTemplate restTemplate = new RestTemplate();
 
-        List<PageItems> productList = restTemplate.getForObject(url_3, ContentHouseResponse.class).getPage().getPageItems();
-        List<PageItems> category = restTemplate.getForObject(url_1, ContentHouseResponse.class).getPage().getPageItems();
-        List<PageItems> subCategory = restTemplate.getForObject(url_2, ContentHouseResponse.class).getPage().getPageItems();
+        List<PageItem> productList = restTemplate.getForObject(url_3, ContentHouseResponse.class).getPage().getPageItems();
+        List<PageItem> category = restTemplate.getForObject(url_1, ContentHouseResponse.class).getPage().getPageItems();
+        List<PageItem> subCategory = restTemplate.getForObject(url_2, ContentHouseResponse.class).getPage().getPageItems();
         System.out.println(productList);
     //    subCategoryService.save(subCategory);
 //        for (PageItems items: category ) {
@@ -55,12 +55,12 @@ public class ContentHouseApiClient {
 //
 //            }
 //            categoryService.save(items);
-        for (PageItems item: subCategory) {
+        for (PageItem item: subCategory) {
             categoryService.save(item);
 
         }
         try {
-            for (PageItems item: productList) {
+            for (PageItem item: productList) {
                 System.out.println(item);
                 productService.save(item);
 

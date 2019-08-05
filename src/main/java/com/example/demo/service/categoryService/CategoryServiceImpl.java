@@ -2,7 +2,7 @@ package com.example.demo.service.categoryService;
 
 import com.example.demo.dao.CategoryDAO;
 import com.example.demo.entity.Category;
-import com.example.demo.contentHouse.api.PageItems;
+import com.example.demo.contentHouse.api.PageItem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,7 +30,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public void save(PageItems item) {
+    public void save(PageItem item) {
         if (item!=null) {
             categoryDAO.save(new Category(
                     item.getId(),

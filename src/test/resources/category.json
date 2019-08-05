@@ -1,0 +1,20 @@
+{
+  "page": {
+    "pageItems": [
+      {
+        "id": 70037,
+        "name": "Конструкторы",
+        "categoryId": "010101",
+        "path": "/",
+        "children": [ ],
+        "leaf": false,
+        "productsCount": 0,
+        "weight": 1,
+        "parentId": null
+      }
+    ],
+    "totalRows": 1,
+    "error": null,
+    "success": true
+  }
+}

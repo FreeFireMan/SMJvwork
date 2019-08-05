@@ -1,5 +1,8 @@
-- for test purposes collect several real life json snapshots under /test/resources folder
-- come up with a stable workflow idea (cache in whole, cache piece by piece, etc)
-- how to minimize client-server interactions (localstorage?, relevance hash?)
-- how to minimize server-agent (content house) interaction (relevance hash?)
-- get rid of subcategory concept as it is exactly the same with a category 
+- [x] for test purposes collect several real life json snapshots under /test/resources folder
+- [ ] come up with a stable workflow idea (cache in whole, cache piece by piece, etc)
+- [ ] how to minimize client-server interactions (localstorage?, relevance hash?)
+- [ ] how to minimize server-agent (content house) interaction (relevance hash?)
+- [x] get rid of subcategory concept as it is exactly the same with a category
+- [ ] refactor ContentHouseApiClient
+    - [ ] shouldn't interact with db. rather should return parsed data
+    - [ ] shouldn't have anything to do with scheduling. Catalog Tree Fetching should be delegated to separate service.  

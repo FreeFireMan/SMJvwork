@@ -1,7 +1,7 @@
 package com.example.demo.service.categoryService;
 
 import com.example.demo.dao.CategoryDAO;
-import com.example.demo.entity.Category;
+import com.example.demo.entity.CategoryDefinition;
 import com.example.demo.contentHouse.api.PageItem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,28 +11,29 @@ import java.util.List;
 @Service
 @Transactional
 public class CategoryServiceImpl implements CategoryService {
+
     @Autowired
     CategoryDAO categoryDAO;
-    @Override
-    public void save(Category category) {
-        if (category!=null) categoryDAO.save(category);
 
+    @Override
+    public void save(CategoryDefinition category) {
+        if (category!=null) categoryDAO.save(category);
     }
 
     @Override
-    public List<Category> findAll() {
+    public List<CategoryDefinition> findAll() {
         return categoryDAO.findAll();
     }
 
     @Override
-    public void save(List<Category> category) {
+    public void save(List<CategoryDefinition> category) {
         if (category!=null) categoryDAO.saveAll(category);
     }
 
     @Override
     public void save(PageItem item) {
         if (item!=null) {
-            categoryDAO.save(new Category(
+            categoryDAO.save(new CategoryDefinition(
                     item.getId(),
                     item.getName(),
                     item.getCategoryId(),
@@ -40,9 +41,7 @@ public class CategoryServiceImpl implements CategoryService {
                     item.isLeaf(),
                     item.getProductsCount(),
                     item.getWeight(),
-                    item.getParentId(),
-                    item.getChildren()
-            ));
+                    item.getParentId()));
         }
     }
 }

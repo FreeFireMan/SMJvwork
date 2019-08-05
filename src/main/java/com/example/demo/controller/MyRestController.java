@@ -1,7 +1,7 @@
 package com.example.demo.controller;
 
-import com.example.demo.entity.Category;
-import com.example.demo.entity.Product;
+import com.example.demo.entity.CategoryDefinition;
+import com.example.demo.entity.ProductDefinition;
 import com.example.demo.service.productService.ProductServiceImpl;
 import com.example.demo.service.categoryService.CategoryServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,13 +24,13 @@ public class  MyRestController {
 
     @CrossOrigin(origins = "http://localhost:8080")
     @GetMapping("/tree")
-    public List<Category> hello(){
+    public List<CategoryDefinition> hello(){
        // System.out.println(categoryService.findAll());
         return categoryService.findAll();
     }
     @CrossOrigin(origins = "http://localhost:8080")
     @GetMapping("/prod")
-    public List<Product> products(){
+    public List<ProductDefinition> products(){
         System.out.println(productService.findAll());
         return productService.findAll();
     }

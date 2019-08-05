@@ -1,6 +1,6 @@
 package com.example.demo.entity;
 
-import com.example.demo.contentHouse.api.PageItems;
+import com.example.demo.contentHouse.api.PageItem;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -16,7 +16,7 @@ public class Category {
     private String name;
     private String categoryId;
     private String path;
-    private List<PageItems> children; //subCategory
+    private List<PageItem> children; //subCategory
     private boolean leaf;
     private String productsCount;
     private String weight;
@@ -31,7 +31,7 @@ public class Category {
                     String productsCount,
                     String weight,
                     String parentId,
-                    List<PageItems> children) {
+                    List<PageItem> children) {
         this.id = id;
         this.name = name;
         this.categoryId = categoryId;
@@ -47,7 +47,7 @@ public class Category {
     public List<String> getListSubCategory()
     {
          ArrayList<String> subCategory = new ArrayList<>();
-         for (PageItems child : this.getChildren()) {
+         for (PageItem child : this.getChildren()) {
             subCategory.add(child.getName());
         }
 

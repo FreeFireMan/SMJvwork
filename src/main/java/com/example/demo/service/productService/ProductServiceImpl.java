@@ -2,7 +2,7 @@ package com.example.demo.service.productService;
 
 import com.example.demo.dao.ProductDAO;
 import com.example.demo.entity.Product;
-import com.example.demo.contentHouse.api.PageItems;
+import com.example.demo.contentHouse.api.PageItem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,7 +32,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void save(PageItems item) {
+    public void save(PageItem item) {
         if (item!=null){
             productDAO.save(new Product(
                     item.getId(),

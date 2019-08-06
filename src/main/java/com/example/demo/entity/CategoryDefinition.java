@@ -45,16 +45,4 @@ public class CategoryDefinition {
         this.parentId = parentId;
     }
 
-    public CategoryDefinition(PageItem next) {
-        if (next!=null) {
-            this.setId(next.getId());
-                    this.setName(next.getName());
-            this.setCategoryId(next.getCategoryId());
-            this.setPath(next.getPath());
-            this.setLeaf(next.isLeaf());
-            this.setProductsCount(next.getProductsCount());
-            this.setWeight(next.getWeight());
-            this.setParentId(next.getParentId());
-        }
-    }
 }

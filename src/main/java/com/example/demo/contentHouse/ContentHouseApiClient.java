@@ -27,42 +27,17 @@ public class ContentHouseApiClient implements ContentHouseApi{
         System.out.println("Scheduler Date: "+ new Date());
     }
 
-    private static String url_1 = "http://content-house.pro/cs/api/export/categories/70037?login=lego&password=e7ddaob3&format=json";
-    private static String url_2 = "http://content-house.pro/cs/api/export/categories/70037/children?login=lego&password=e7ddaob3&format=json";
-    private static String url_3 = "http://content-house.pro/cs/api/export/categories/70038/products?login=lego&password=e7ddaob3&format=json";
-
 
     private CategoryService categoryService;
     private ProductService productService;
 
     public void GetData(){
+        //TODO Don’t change anything what is irrelevant to api interface please
         categoryService.deleteAll();
-        productService.dalateAll();
+        productService.deleteAll();
+
+
         RestTemplate restTemplate = new RestTemplate();
-
-        List<PageItem> productList = restTemplate.getForObject(url_3, ContentHouseResponse.class).getPage().getPageItems();
-        List<PageItem> category = restTemplate.getForObject(url_1, ContentHouseResponse.class).getPage().getPageItems();
-        List<PageItem> subCategory = restTemplate.getForObject(url_2, ContentHouseResponse.class).getPage().getPageItems();
-
-    //    subCategoryService.save(subCategory);
-//        for (PageItems items: category ) {
-//
-//            for (PageItems sub: subCategory ) {
-//                for (PageItems prod: productList) {
-//                    if (sub.getId().equals(prod.getCategoryId())){
-//                        sub.setOneChildren(prod);
-//                    }
-//
-//                }Л
-//                if (items.getId().equals(sub.getParentId())){
-//                    items.setOneChildren(sub);
-//                }
-//
-//            }
-//            categoryService.save(items);
-//        categoryService.deleteAll();
-//        productService.dalateAll();
-      //  CategoryDefinition def= fetchCategory("70037").get();
 
         for ( CategoryDefinition item: fetchCategoriesOf("70037").get()
              ) {
@@ -77,23 +52,6 @@ public class ContentHouseApiClient implements ContentHouseApi{
         }
 
 
-//        for (PageItem item: subCategory) {
-//            categoryService.save(item);
-//
-//
-//        }
-//        try {
-//            for (PageItem item: productList) {
-//
-//                productService.save(item);
-//
-//            }
-//        } catch (Exception e){
-//            System.out.println("Product save error" + e);
-//        }
-////        }
-
-
     }
 
     @Autowired
@@ -106,7 +64,8 @@ public class ContentHouseApiClient implements ContentHouseApi{
 
     @Override
     public Optional<CategoryDefinition> fetchCategory(String id) {
-        RestTemplate restTemplate = new RestTemplate();
+        RestTemplate restTemplate = new RestTemplate(); //TODO may we have it as a class field?
+        //TODO Can we externalize uri building stuff? How do you handle 404?
         String url = "http://content-house.pro/cs/api/export/categories/"+id+"?login=lego&password=e7ddaob3&format=json";
         List<PageItem> category =
                 restTemplate.getForObject(url, ContentHouseResponse.class)
@@ -114,15 +73,20 @@ public class ContentHouseApiClient implements ContentHouseApi{
                         .getPageItems();
 
             System.out.println("fetchCategory work");
-            CategoryDefinition def = new CategoryDefinition(category.iterator().next());
+
+            CategoryDefinition def = null;
+            if (!category.isEmpty()){
+                def = category.iterator().next().toGategory().get();
+            }
 
 
-        return Optional.of(def);
+        return Optional.of(def); //TODO what id def is null?
     }
 
     @Override
     public Optional<Iterable<CategoryDefinition>> fetchCategoriesOf(String id) {
-        RestTemplate restTemplate = new RestTemplate();
+        RestTemplate restTemplate = new RestTemplate(); //TODO may we have it as a class field?
+        //TODO Can we externalize uri building stuff? How do you handle 404?
         String url = "http://content-house.pro/cs/api/export/categories/"+id+"/children?login=lego&password=e7ddaob3&format=json";
         List<PageItem> subCategory =
                 restTemplate.getForObject(url, ContentHouseResponse.class)
@@ -131,17 +95,18 @@ public class ContentHouseApiClient implements ContentHouseApi{
         List<CategoryDefinition> def = new ArrayList<CategoryDefinition>();
         for (PageItem item: subCategory
              ) {
-            def.add(new CategoryDefinition(item));
+            def.add(item.toGategory().get());
         }
 
         System.out.println("fetchCategoriesOf work");
 
-        return Optional.of(def);
+        return Optional.of(def); //TODO what id def is null?
     }
 
     @Override
     public Optional<Iterable<ProductDefinition>> fetchProductsOf(String id) {
-        RestTemplate restTemplate = new RestTemplate();
+        RestTemplate restTemplate = new RestTemplate(); //TODO may we have it as a class field?
+        //TODO Can we externalize uri building stuff? How do you handle 404?
         String url = "http://content-house.pro/cs/api/export/categories/"+id+"/products?login=lego&password=e7ddaob3&format=json";
         List<PageItem> productList =
                 restTemplate.getForObject(url, ContentHouseResponse.class)
@@ -150,7 +115,7 @@ public class ContentHouseApiClient implements ContentHouseApi{
         List<ProductDefinition> def = new ArrayList<ProductDefinition>();
         for (PageItem item: productList
         ) {
-            def.add(new ProductDefinition(item));
+            def.add(item.toProduct().get());
         }
 
         System.out.println("fetchProductsOf work");
@@ -158,6 +123,6 @@ public class ContentHouseApiClient implements ContentHouseApi{
 
 
 
-        return Optional.of(def);
+        return Optional.of(def); //TODO what id def is null?
     }
 }

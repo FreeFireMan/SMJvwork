@@ -21,6 +21,8 @@ public class  MyRestController {
 
 
     @Autowired
+    private  FetchService fetchService;
+    @Autowired
     private CategoryServiceImpl categoryService;
     @Autowired
     private ProductServiceImpl productService;
@@ -36,7 +38,7 @@ public class  MyRestController {
     @CrossOrigin(origins = "http://localhost:8080")
     @GetMapping("/prod")
     public List<ProductDefinition> products(){
-        System.out.println(productService.findAll());
+
         return productService.findAll();
     }
 

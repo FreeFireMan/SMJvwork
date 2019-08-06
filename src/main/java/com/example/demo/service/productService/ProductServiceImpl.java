@@ -32,9 +32,8 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void dalateAll() {
+    public void deleteAll() {
         productDAO.deleteAll();
-        System.out.println("I delete All product");
     }
 
     @Override

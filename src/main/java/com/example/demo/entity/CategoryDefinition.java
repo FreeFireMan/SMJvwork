@@ -1,6 +1,8 @@
 package com.example.demo.entity;
 
+import com.example.demo.contentHouse.api.PageItem;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -8,6 +10,7 @@ import java.util.List;
 
 @Document
 @Data
+@NoArgsConstructor
 public class CategoryDefinition {
 
     @Id
@@ -19,6 +22,7 @@ public class CategoryDefinition {
     private int productsCount;
     private String weight;
     private String parentId;
+
 
 
     public CategoryDefinition(
@@ -40,4 +44,5 @@ public class CategoryDefinition {
         this.weight = weight;
         this.parentId = parentId;
     }
+
 }

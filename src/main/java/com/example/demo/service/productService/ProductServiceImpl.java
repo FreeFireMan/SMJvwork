@@ -32,6 +32,11 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public void deleteAll() {
+        productDAO.deleteAll();
+    }
+
+    @Override
     public void save(PageItem item) {
         if (item!=null){
             productDAO.save(new ProductDefinition(

@@ -1,11 +1,13 @@
 package com.example.demo.contentHouse.api;
 
+import com.example.demo.entity.CategoryDefinition;
+import com.example.demo.entity.ProductDefinition;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 
-import java.util.List;
+import java.util.Optional;
 
 
 @Data
@@ -43,4 +45,48 @@ public class PageItem {
     private String model_color;
     private String model_union;
     private String ean;
+
+    public Optional<CategoryDefinition> toGategory(){
+        Optional<CategoryDefinition> def = Optional.of(new CategoryDefinition(
+                this.getId(),
+                this.getName(),
+                this.getCategoryId(),
+                this.getPath(),
+                this.isLeaf(),
+                this.getProductsCount(),
+                this.getWeight(),
+                this.getParentId()
+        ));
+
+        return def;
+    }
+    public Optional<ProductDefinition> toProduct(){
+        Optional<ProductDefinition> def = Optional.of(new ProductDefinition(
+                this.getId(),
+                this.getLastUpdated(),
+                this.getName(),
+                this.getShortName(),
+                this.getLongName(),
+                this.getBaseImage(),
+                this.getArticle(),
+                this.getManufacturer(),
+                this.getAnnotation(),
+                this.getCategoryIdStr(),
+                this.getCategoryId(),
+                this.getPartNumber(),
+                this.getBrand(),
+                this.getFamily(),
+                this.getSeries(),
+                this.getModel(),
+                this.isHasImage(),
+                this.isHasVideo(),
+                this.isHas360View(),
+                this.isHasInstructions(),
+                this.isHasMarketText(),
+                this.getModel_color(),
+                this.getModel_union(),
+                this.getEan()));
+
+        return def;
+    }
 }

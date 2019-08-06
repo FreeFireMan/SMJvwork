@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.entity.CategoryDefinition;
 import com.example.demo.entity.ProductDefinition;
+import com.example.demo.service.fetch.FetchService;
 import com.example.demo.service.productService.ProductServiceImpl;
 import com.example.demo.service.categoryService.CategoryServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,10 +18,16 @@ import java.util.List;
 
 @RequestMapping("api")
 public class  MyRestController {
+
+
+    @Autowired
+    private  FetchService fetchService;
     @Autowired
     private CategoryServiceImpl categoryService;
     @Autowired
     private ProductServiceImpl productService;
+
+
 
     @CrossOrigin(origins = "http://localhost:8080")
     @GetMapping("/tree")
@@ -31,7 +38,7 @@ public class  MyRestController {
     @CrossOrigin(origins = "http://localhost:8080")
     @GetMapping("/prod")
     public List<ProductDefinition> products(){
-        System.out.println(productService.findAll());
+
         return productService.findAll();
     }
 

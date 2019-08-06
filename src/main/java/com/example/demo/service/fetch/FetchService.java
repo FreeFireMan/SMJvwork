@@ -6,10 +6,11 @@ import com.example.demo.entity.CategoryNode;
 import com.example.demo.entity.ProductDefinition;
 import com.example.demo.entity.ProductNode;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
-
+@Service
 public class FetchService {
 
     @Autowired

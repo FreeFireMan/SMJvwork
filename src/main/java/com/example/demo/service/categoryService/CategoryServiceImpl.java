@@ -31,6 +31,12 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    public void deleteAll() {
+        categoryDAO.deleteAll();
+        System.out.println("I delete All category");
+    }
+
+    @Override
     public void save(PageItem item) {
         if (item!=null) {
             categoryDAO.save(new CategoryDefinition(

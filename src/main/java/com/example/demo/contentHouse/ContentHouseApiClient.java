@@ -75,6 +75,7 @@ public class ContentHouseApiClient implements ContentHouseApi{
             System.out.println("fetchCategory work");
 
             CategoryDefinition def = null;
+
             if (!category.isEmpty()){
                 def = category.iterator().next().toGategory().get();
             }

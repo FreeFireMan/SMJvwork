@@ -46,7 +46,7 @@ public class PageItem {
     private String model_union;
     private String ean;
 
-    public Optional<CategoryDefinition> toGategory(){
+    public Optional<CategoryDefinition> toCategory() {
         Optional<CategoryDefinition> def = Optional.of(new CategoryDefinition(
                 this.getId(),
                 this.getName(),

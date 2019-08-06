@@ -38,34 +38,6 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void save(PageItem item) {
-        if (item!=null){
-            productDAO.save(new ProductDefinition(
-                    item.getId(),
-                    item.getLastUpdated(),
-                    item.getName(),
-                    item.getShortName(),
-                    item.getLongName(),
-                    item.getBaseImage(),
-                    item.getArticle(),
-                    item.getManufacturer(),
-                    item.getAnnotation(),
-                    item.getCategoryIdStr(),
-                    item.getCategoryId(),
-                    item.getPartNumber(),
-                    item.getBrand(),
-                    item.getFamily(),
-                    item.getSeries(),
-                    item.getModel(),
-                    item.isHasImage(),
-                    item.isHasVideo(),
-                    item.isHas360View(),
-                    item.isHasInstructions(),
-                    item.isHasMarketText(),
-                    item.getModel_color(),
-                    item.getModel_union(),
-                    item.getEan()
-            ));
-        }
-
+        item.toProduct().ifPresent(productDAO::save);
     }
 }

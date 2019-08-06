@@ -36,12 +36,14 @@ public class ContentHouseApiClient implements ContentHouseApi{
     private ProductService productService;
 
     public void GetData(){
+        categoryService.deleteAll();
+        productService.dalateAll();
         RestTemplate restTemplate = new RestTemplate();
 
         List<PageItem> productList = restTemplate.getForObject(url_3, ContentHouseResponse.class).getPage().getPageItems();
         List<PageItem> category = restTemplate.getForObject(url_1, ContentHouseResponse.class).getPage().getPageItems();
         List<PageItem> subCategory = restTemplate.getForObject(url_2, ContentHouseResponse.class).getPage().getPageItems();
-        System.out.println(productList);
+
     //    subCategoryService.save(subCategory);
 //        for (PageItems items: category ) {
 //
@@ -60,21 +62,36 @@ public class ContentHouseApiClient implements ContentHouseApi{
 //            categoryService.save(items);
 //        categoryService.deleteAll();
 //        productService.dalateAll();
-        for (PageItem item: subCategory) {
+      //  CategoryDefinition def= fetchCategory("70037").get();
+
+        for ( CategoryDefinition item: fetchCategoriesOf("70037").get()
+             ) {
             categoryService.save(item);
+            if (item.getProductsCount()>0){
+                for (ProductDefinition prod: fetchProductsOf(item.getId().toString()).get()
+                     ) {
 
-
-        }
-        try {
-            for (PageItem item: productList) {
-                System.out.println(item);
-                productService.save(item);
-
+                    productService.save(prod);
+                }
             }
-        } catch (Exception e){
-            System.out.println("Product save error" + e);
         }
+
+
+//        for (PageItem item: subCategory) {
+//            categoryService.save(item);
+//
+//
 //        }
+//        try {
+//            for (PageItem item: productList) {
+//
+//                productService.save(item);
+//
+//            }
+//        } catch (Exception e){
+//            System.out.println("Product save error" + e);
+//        }
+////        }
 
 
     }
@@ -90,7 +107,7 @@ public class ContentHouseApiClient implements ContentHouseApi{
     @Override
     public Optional<CategoryDefinition> fetchCategory(String id) {
         RestTemplate restTemplate = new RestTemplate();
-        String url = "http://content-house.pro/cs/api/export/categories/"+id.toString()+"?login=lego&password=e7ddaob3&format=json";
+        String url = "http://content-house.pro/cs/api/export/categories/"+id+"?login=lego&password=e7ddaob3&format=json";
         List<PageItem> category =
                 restTemplate.getForObject(url, ContentHouseResponse.class)
                         .getPage()
@@ -106,7 +123,7 @@ public class ContentHouseApiClient implements ContentHouseApi{
     @Override
     public Optional<Iterable<CategoryDefinition>> fetchCategoriesOf(String id) {
         RestTemplate restTemplate = new RestTemplate();
-        String url = "http://content-house.pro/cs/api/export/categories/"+id.toString()+"/children?login=lego&password=e7ddaob3&format=json";
+        String url = "http://content-house.pro/cs/api/export/categories/"+id+"/children?login=lego&password=e7ddaob3&format=json";
         List<PageItem> subCategory =
                 restTemplate.getForObject(url, ContentHouseResponse.class)
                         .getPage()
@@ -125,7 +142,7 @@ public class ContentHouseApiClient implements ContentHouseApi{
     @Override
     public Optional<Iterable<ProductDefinition>> fetchProductsOf(String id) {
         RestTemplate restTemplate = new RestTemplate();
-        String url = "http://content-house.pro/cs/api/export/categories/"+id.toString()+"/products?login=lego&password=e7ddaob3&format=json";
+        String url = "http://content-house.pro/cs/api/export/categories/"+id+"/products?login=lego&password=e7ddaob3&format=json";
         List<PageItem> productList =
                 restTemplate.getForObject(url, ContentHouseResponse.class)
                         .getPage()

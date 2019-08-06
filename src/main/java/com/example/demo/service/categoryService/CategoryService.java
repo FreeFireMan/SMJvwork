@@ -4,6 +4,7 @@ import com.example.demo.entity.CategoryDefinition;
 import com.example.demo.contentHouse.api.PageItem;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface CategoryService {
     void save(CategoryDefinition category);
@@ -12,4 +13,6 @@ public interface CategoryService {
     void deleteAll();
 
     void save(PageItem items);
+
+
 }

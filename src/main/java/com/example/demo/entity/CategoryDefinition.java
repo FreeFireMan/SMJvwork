@@ -52,7 +52,7 @@ public class CategoryDefinition {
             this.setCategoryId(next.getCategoryId());
             this.setPath(next.getPath());
             this.setLeaf(next.isLeaf());
-            this.setParentId(Integer.toString(next.getProductsCount()));
+            this.setProductsCount(next.getProductsCount());
             this.setWeight(next.getWeight());
             this.setParentId(next.getParentId());
         }

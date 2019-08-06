@@ -28,6 +28,7 @@ public class ContentHouseApiClient implements ContentHouseApi{
     }
 
 
+    private RestTemplate restTemplate = new RestTemplate();
     private CategoryService categoryService;
     private ProductService productService;
 
@@ -59,12 +60,12 @@ public class ContentHouseApiClient implements ContentHouseApi{
 
         this.categoryService = categoryService;
         this.productService = productService;
+
     }
 
 
     @Override
     public Optional<CategoryDefinition> fetchCategory(String id) {
-        RestTemplate restTemplate = new RestTemplate(); //TODO may we have it as a class field?
         //TODO Can we externalize uri building stuff? How do you handle 404?
         String url = "http://content-house.pro/cs/api/export/categories/"+id+"?login=lego&password=e7ddaob3&format=json";
         List<PageItem> category =
@@ -86,7 +87,6 @@ public class ContentHouseApiClient implements ContentHouseApi{
 
     @Override
     public Optional<Iterable<CategoryDefinition>> fetchCategoriesOf(String id) {
-        RestTemplate restTemplate = new RestTemplate(); //TODO may we have it as a class field?
         //TODO Can we externalize uri building stuff? How do you handle 404?
         String url = "http://content-house.pro/cs/api/export/categories/"+id+"/children?login=lego&password=e7ddaob3&format=json";
         List<PageItem> subCategory =
@@ -106,7 +106,6 @@ public class ContentHouseApiClient implements ContentHouseApi{
 
     @Override
     public Optional<Iterable<ProductDefinition>> fetchProductsOf(String id) {
-        RestTemplate restTemplate = new RestTemplate(); //TODO may we have it as a class field?
         //TODO Can we externalize uri building stuff? How do you handle 404?
         String url = "http://content-house.pro/cs/api/export/categories/"+id+"/products?login=lego&password=e7ddaob3&format=json";
         List<PageItem> productList =

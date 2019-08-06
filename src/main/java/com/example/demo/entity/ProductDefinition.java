@@ -89,30 +89,4 @@ public class ProductDefinition {
         this.ean = ean;
     }
 
-//    public ProductDefinition(PageItem item) {
-//        this.id = item.getId();
-//        this.lastUpdated = item.getLastUpdated();
-//        this.name = item.getName();
-//        this.shortName = item.getShortName();
-//        this.longName = item.getLongName();
-//        this.baseImage = item.getBaseImage();
-//        this.article = item.getArticle();
-//        this.manufacturer = item.getManufacturer();
-//        this.annotation = item.getAnnotation();
-//        this.categoryIdStr = item.getCategoryIdStr();
-//        this.categoryId = item.getCategoryId();
-//        this.partNumber = item.getPartNumber();
-//        this.brand = item.getBrand();
-//        this.family = item.getFamily();
-//        this.series = item.getSeries();
-//        this.model = item.getModel();
-//        this.hasImage = item.isHasImage();
-//        this.hasVideo = item.isHasVideo();
-//        this.has360View = item.isHas360View();
-//        this.hasInstructions = item.isHasInstructions();
-//        this.hasMarketText = item.isHasMarketText();
-//        this.model_color = item.getModel_color();
-//        this.model_union = item.getModel_union();
-//        this.ean = item.getEan();
-//    }
 }

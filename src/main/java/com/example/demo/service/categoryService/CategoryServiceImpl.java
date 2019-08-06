@@ -38,16 +38,6 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public void save(PageItem item) {
-        if (item!=null) {
-            categoryDAO.save(new CategoryDefinition(
-                    item.getId(),
-                    item.getName(),
-                    item.getCategoryId(),
-                    item.getPath(),
-                    item.isLeaf(),
-                    item.getProductsCount(),
-                    item.getWeight(),
-                    item.getParentId()));
-        }
+        item.toCategory().ifPresent(categoryDAO::save);
     }
 }

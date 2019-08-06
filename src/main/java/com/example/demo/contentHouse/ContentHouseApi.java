@@ -14,7 +14,7 @@ public interface ContentHouseApi {
      * @param id category id
      * @return
      */
-    public Optional<CategoryDefinition> fetchCategory(String id);
+    public Optional<CategoryDefinition> fetchCategory(String id); // достаем главную категорию
 
     /**
      * Returns a collection of children category definitions
@@ -22,12 +22,12 @@ public interface ContentHouseApi {
      * @param id parent category id
      * @return
      */
-    public Optional<Iterable<CategoryDefinition>> fetchCategoriesOf(String id);
+    public Optional<Iterable<CategoryDefinition>> fetchCategoriesOf(String id); // достаем под категорию
 
     /**
      * Returns a collection of product definitions belonging to specified category
      * @param id
      * @return
      */
-    public Optional<Iterable<ProductDefinition>> fetchProductsOf(String id);
+    public Optional<Iterable<ProductDefinition>> fetchProductsOf(String id);//достаем продукты
 }

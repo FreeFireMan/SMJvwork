@@ -1,11 +1,14 @@
 package com.example.demo.entity;
 
+import com.example.demo.contentHouse.api.PageItem;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document
 @Data
+@NoArgsConstructor
 public class ProductDefinition {
 
     @Id
@@ -84,5 +87,32 @@ public class ProductDefinition {
         this.model_color = model_color;
         this.model_union = model_union;
         this.ean = ean;
+    }
+
+    public ProductDefinition(PageItem item) {
+        this.id = item.getId();
+        this.lastUpdated = item.getLastUpdated();
+        this.name = item.getName();
+        this.shortName = item.getShortName();
+        this.longName = item.getLongName();
+        this.baseImage = item.getBaseImage();
+        this.article = item.getArticle();
+        this.manufacturer = item.getManufacturer();
+        this.annotation = item.getAnnotation();
+        this.categoryIdStr = item.getCategoryIdStr();
+        this.categoryId = item.getCategoryId();
+        this.partNumber = item.getPartNumber();
+        this.brand = item.getBrand();
+        this.family = item.getFamily();
+        this.series = item.getSeries();
+        this.model = item.getModel();
+        this.hasImage = item.isHasImage();
+        this.hasVideo = item.isHasVideo();
+        this.has360View = item.isHas360View();
+        this.hasInstructions = item.isHasInstructions();
+        this.hasMarketText = item.isHasMarketText();
+        this.model_color = item.getModel_color();
+        this.model_union = item.getModel_union();
+        this.ean = item.getEan();
     }
 }

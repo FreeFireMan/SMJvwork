@@ -9,6 +9,7 @@ public interface CategoryService {
     void save(CategoryDefinition category);
     List<CategoryDefinition> findAll();
     void save(List<CategoryDefinition> category);
+    void deleteAll();
 
     void save(PageItem items);
 }

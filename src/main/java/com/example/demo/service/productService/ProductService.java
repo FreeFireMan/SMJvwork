@@ -9,6 +9,7 @@ public interface ProductService {
     void save(ProductDefinition product);
     List<ProductDefinition> findAll();
     void save(List<ProductDefinition> product);
+    void dalateAll();
 
 
     void save(PageItem items);

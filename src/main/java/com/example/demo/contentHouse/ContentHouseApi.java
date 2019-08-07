@@ -3,23 +3,17 @@ package com.example.demo.contentHouse;
 import com.example.demo.contentHouse.api.ContentHouseResponse;
 import com.example.demo.contentHouse.api.Page;
 import com.example.demo.contentHouse.api.PageItem;
-import com.example.demo.entity.CategoryDefinition;
-import com.example.demo.entity.ProductDefinition;
-import com.example.demo.service.categoryService.CategoryService;
-import com.example.demo.service.productService.ProductService;
+import com.example.demo.contentHouse.model.CategoryDefinition;
+import com.example.demo.contentHouse.model.ProductDefinition;
+import com.example.demo.utils.OptionalUtils;
+import com.example.demo.utils.RequestResponseLoggingInterceptor;
 import lombok.Data;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-import java.util.function.Consumer;
+import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -49,19 +43,34 @@ public class ContentHouseApi {
         return sb.toString();
     }
 
-    private RestTemplate restTemplate = new RestTemplate();
+    private static RestTemplate makeRestTemplate() {
+        RestTemplate t = new RestTemplate();
+        t.setInterceptors(Collections.singletonList(new RequestResponseLoggingInterceptor()));
+        return t;
+    }
 
-    private <T> Optional<T> safe(Supplier<T> fn) {
+    private RestTemplate restTemplate = makeRestTemplate();
+
+    private <T> Optional<T> ifFound(Supplier<T> fn) {
         try {
-            return Optional.of(fn.get());
+            return Optional.ofNullable(fn.get());
         } catch (HttpClientErrorException ex) {
             if (ex.getStatusCode() == HttpStatus.NOT_FOUND) return Optional.empty();
             else throw ex;
         }
     }
 
+    private <T> Optional<T> safeNotNull(Supplier<T> fn) {
+        try {
+            return Optional.ofNullable(fn.get());
+        } catch (Throwable ex) {
+            return Optional.empty();
+        }
+    }
+
     private Optional<Page> fetchPage(String uri) {
-        return safe(() -> restTemplate.getForObject(uri, ContentHouseResponse.class)).map(ContentHouseResponse::getPage);
+        return ifFound(() -> restTemplate.getForObject(uri, ContentHouseResponse.class))
+            .map(ContentHouseResponse::getPage);
     }
 
     /**
@@ -74,7 +83,7 @@ public class ContentHouseApi {
         return fetchPage(uri(id, null)).flatMap(page -> {
                 List<PageItem> items = page.getPageItems();
                 if (items.isEmpty()) return Optional.empty(); else {
-                    return Optional.of(items.iterator().next()).flatMap(PageItem::toCategory);
+                    return safeNotNull(() -> items.iterator().next()).flatMap(PageItem::toCategory);
                 }
         });
     }
@@ -85,15 +94,14 @@ public class ContentHouseApi {
      * @param id parent category id
      * @return
      */
-    public Optional<Iterable<CategoryDefinition>> fetchCategoriesOf(String id) {
+    public Optional<List<CategoryDefinition>> fetchCategoriesOf(String id) {
         return fetchPage(uri(id, "children")).map(page -> {
             List<PageItem> items = page.getPageItems();
-            Stream<CategoryDefinition> categories = items.stream()
-                    .flatMap(o -> {
-                        Optional<CategoryDefinition> c = o.toCategory();
-                        return c.isPresent() ? Stream.of(c.get()) : Stream.<CategoryDefinition>empty();
-                    });
-            return (Iterable<CategoryDefinition>) categories.iterator();
+            if (items != null) {
+                Stream<CategoryDefinition> categories = items.stream().flatMap(o -> OptionalUtils.toStream(o.toCategory()));
+                return categories.collect(Collectors.toList());
+            } else
+                return Collections.emptyList();
         });
     }
 
@@ -102,15 +110,11 @@ public class ContentHouseApi {
      * @param id
      * @return
      */
-    public Optional<Iterable<ProductDefinition>> fetchProductsOf(String id) {
+    public Optional<List<ProductDefinition>> fetchProductsOf(String id) {
         return fetchPage(uri(id, "products")).map(page -> {
             List<PageItem> items = page.getPageItems();
-            Stream<ProductDefinition> products = items.stream()
-                    .flatMap(o -> {
-                        Optional<ProductDefinition> c = o.toProduct();
-                        return c.isPresent() ? Stream.of(c.get()) : Stream.<ProductDefinition>empty();
-                    });
-            return (Iterable<ProductDefinition>) products.iterator();
+            Stream<ProductDefinition> products = items.stream().flatMap(o -> OptionalUtils.toStream(o.toProduct()));
+            return products.collect(Collectors.toList());
         });
     }
 }

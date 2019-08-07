@@ -1,7 +1,7 @@
 package com.example.demo.contentHouse.api;
 
-import com.example.demo.entity.CategoryDefinition;
-import com.example.demo.entity.ProductDefinition;
+import com.example.demo.contentHouse.model.CategoryDefinition;
+import com.example.demo.contentHouse.model.ProductDefinition;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,7 +17,7 @@ public class PageItem {
 
     @Id
     private String id;
-    private String name;
+    private Optional<String> name;
     private String categoryId;
     private String path;
     private boolean leaf;

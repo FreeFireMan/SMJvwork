@@ -19,74 +19,96 @@ public class PageItem {
     private String id;
     private Optional<String> name;
     private String categoryId;
-    private String path;
+    private Optional<String> path = Optional.empty();
     private boolean leaf;
     private int productsCount;
-    private String weight;
-    private String parentId;
-    private String lastUpdated;
-    private String shortName;
-    private String longName;
-    private String baseImage;
-    private String article;
-    private String manufacturer;
-    private String annotation;
-    private String categoryIdStr;
-    private String partNumber;
-    private String brand;
-    private String family;
-    private String series;
-    private String model;
+    private Optional<String> weight = Optional.empty();
+    private Optional<String> parentId = Optional.empty();
+    private Optional<String> lastUpdated = Optional.empty();
+    private Optional<String> shortName = Optional.empty();
+    private Optional<String> longName = Optional.empty();
+    private Optional<String> baseImage = Optional.empty();
+    private Optional<String> article = Optional.empty();
+    private Optional<String> manufacturer = Optional.empty();
+    private Optional<String> annotation = Optional.empty();
+    private Optional<String> categoryIdStr = Optional.empty();
+    private Optional<String> partNumber = Optional.empty();
+    private Optional<String> brand = Optional.empty();
+    private Optional<String> family = Optional.empty();
+    private Optional<String> series = Optional.empty();
+    private Optional<String> model = Optional.empty();
     private boolean hasImage;
     private boolean hasVideo;
     private boolean has360View;
     private boolean hasInstructions;
     private boolean hasMarketText;
-    private String model_color;
-    private String model_union;
-    private String ean;
+    private Optional<String> model_color = Optional.empty();
+    private Optional<String> model_union = Optional.empty();
+    private Optional<String> ean = Optional.empty();
+
+    public boolean isProduct() {
+        return !isCategory();
+    }
+
+    public boolean isCategory() {
+        return path.isPresent();
+    }
 
     public Optional<CategoryDefinition> toCategory() {
-        Optional<CategoryDefinition> def = Optional.of(new CategoryDefinition(
-                this.getId(),
-                this.getName(),
-                this.getCategoryId(),
-                this.getPath(),
-                this.isLeaf(),
-                this.getProductsCount(),
-                this.getWeight(),
-                this.getParentId()
-        ));
-
-        return def;
+        if (isCategory()) {
+            return path.flatMap(path -> {
+                return name.flatMap(name -> {
+                    return weight.map(weight -> {
+                        return new CategoryDefinition(
+                                id,
+                                name,
+                                categoryId,
+                                path,
+                                this.isLeaf(),
+                                this.getProductsCount(),
+                                weight,
+                                parentId);
+                    });
+                });
+            });
+        } else
+            return Optional.empty();
     }
-    public Optional<ProductDefinition> toProduct(){
-        Optional<ProductDefinition> def = Optional.of(new ProductDefinition(
-                this.getId(),
-                this.getLastUpdated(),
-                this.getName(),
-                this.getShortName(),
-                this.getLongName(),
-                this.getBaseImage(),
-                this.getArticle(),
-                this.getManufacturer(),
-                this.getAnnotation(),
-                this.getCategoryIdStr(),
-                this.getCategoryId(),
-                this.getPartNumber(),
-                this.getBrand(),
-                this.getFamily(),
-                this.getSeries(),
-                this.getModel(),
-                this.isHasImage(),
-                this.isHasVideo(),
-                this.isHas360View(),
-                this.isHasInstructions(),
-                this.isHasMarketText(),
-                this.getModel_color(),
-                this.getModel_union(),
-                this.getEan()));
 
-        return def;
+    public Optional<ProductDefinition> toProduct() {
+        if (isProduct()) {
+            return lastUpdated.flatMap(lastUpdated -> {
+                return categoryIdStr.flatMap(categoryIdStr -> {
+                    return partNumber.map(partNumber -> {
+                        return new ProductDefinition(
+                                id,
+                                lastUpdated,
+                                name,
+                                shortName,
+                                longName,
+                                baseImage,
+                                article,
+                                manufacturer,
+                                annotation,
+                                categoryIdStr,
+                                categoryId,
+                                partNumber,
+                                brand,
+                                family,
+                                series,
+                                model,
+                                this.isHasImage(),
+                                this.isHasVideo(),
+                                this.isHas360View(),
+                                this.isHasInstructions(),
+                                this.isHasMarketText(),
+                                model_color,
+                                model_union,
+                                ean);
+                    });
+                });
+            });
+        } else
+            return Optional.empty();
     }
 }

@@ -6,9 +6,8 @@ import java.util.List;
 
 @Data
 public class Page {
-
     private List<PageItem> pageItems;
-    private String totalRows;
+    private int totalRows;
     private String error;
     private boolean success;
 }

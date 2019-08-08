@@ -1,10 +1,7 @@
 package com.example.demo.service.fetch;
 
 import com.example.demo.contentHouse.ContentHouseApi;
-import com.example.demo.db.model.CategoryHolder;
-import com.example.demo.db.model.CategoryNode;
-import com.example.demo.db.model.ModelHolder;
-import com.example.demo.db.model.ShortProductHolder;
+import com.example.demo.db.model.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -47,6 +44,7 @@ public class FetchService {
             api.fetchProductsOf(def.getId()).ifPresent(defs -> {
                 for (ShortProductHolder childDef: defs) {
                     callback.accept(childDef);
+                    node.append(new ShortProductNode(childDef));
                     api.fetchProduct(childDef.getId()).ifPresent(callback);
                 }
             });

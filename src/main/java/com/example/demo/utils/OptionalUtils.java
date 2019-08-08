@@ -10,7 +10,7 @@ public class OptionalUtils {
         return opt.map(Stream::of).orElseGet(Stream::<T>empty);
     }
 
-    public static <T> Optional head(Iterable<T> i) {
+    public static <T> Optional<T> head(Iterable<T> i) {
         Iterator<T> it = i.iterator();
         return it.hasNext() ? Optional.ofNullable(it.next()) : Optional.<T>empty();
     }

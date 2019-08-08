@@ -4,21 +4,17 @@ Spring MVC Example App
 ### Prerequisites
 - Install Mongo
 
-
 Try it out
 ----------
 
 `com.example.demo.DemoApplication`
 
-```bash
-# query the catalog
-curl http://localhost:8080/api/catalog/
-# should return 404 as there is nothing there yet
+API
+---
 
-# request catalog upgrade (connect to agent, doenload catalog and cache it)
-curl -D "" http://localhost:8080/api/catalog/upgrade
-
-# query the catalog
-curl http://localhost:8080/api/catalog/
-# at this point it should give you the catalog
-```
+`POST /api/catalog/renew` fetch catalog (categories recursively, product short and long descriptions) and store it in local mongo
+`GET /api/catalog` returns catalog with categories (without products)
+`GET /api/categories/{id}` returns category description  
+`GET /api/categories/{id}/categories` returns sub-categories of specified category  
+`GET /api/categories/{id}/products` returns products (short description) of specified category  
+`GET /api/products/{id}` returns long product description 

@@ -1,0 +1,683 @@
+{
+  "page": {
+    "pageItems": [
+      {
+        "groups": [
+          {
+            "name": "Общие характеристики",
+            "id": 24,
+            "attributes": [
+              {
+                "name": "Тип",
+                "unit": null,
+                "id": 20,
+                "values": [
+                  {
+                    "value": "Пластиковый",
+                    "id": 4495109,
+                    "quantifier": null
+                  }
+                ]
+              },
+              {
+                "name": "Франшиза",
+                "unit": null,
+                "id": 122881,
+                "values": [
+                  {
+                    "value": "Принцессы Дисней",
+                    "id": 10984099,
+                    "quantifier": null
+                  }
+                ]
+              },
+              {
+                "name": "Возраст от",
+                "unit": "лет",
+                "id": 3184,
+                "values": [
+                  {
+                    "value": "6",
+                    "id": 2,
+                    "quantifier": null
+                  }
+                ]
+              },
+              {
+                "name": "Возраст до",
+                "unit": "лет",
+                "id": 3191,
+                "values": [
+                  {
+                    "value": "12",
+                    "id": 780,
+                    "quantifier": null
+                  }
+                ]
+              },
+              {
+                "name": "Пол ребенка",
+                "unit": null,
+                "id": 15502,
+                "values": [
+                  {
+                    "value": "Для мальчиков",
+                    "id": 983092,
+                    "quantifier": null
+                  },
+                  {
+                    "value": "Для девочек",
+                    "id": 533737,
+                    "quantifier": null
+                  }
+                ]
+              },
+              {
+                "name": "Количество деталей",
+                "unit": "шт",
+                "id": 18088,
+                "values": [
+                  {
+                    "value": "380",
+                    "id": 260837,
+                    "quantifier": null
+                  }
+                ]
+              },
+              {
+                "name": "Количество минифигурок",
+                "unit": "шт",
+                "id": 104491,
+                "values": [
+                  {
+                    "value": "2",
+                    "id": 48,
+                    "quantifier": null
+                  }
+                ]
+              },
+              {
+                "name": "Количество снарядов",
+                "unit": "шт",
+                "id": 109873,
+                "values": [
+                  {
+                    "value": "4",
+                    "id": 4,
+                    "quantifier": null
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Дополнительные характеристики",
+            "id": 27,
+            "attributes": [
+              {
+                "name": "Особенности",
+                "unit": null,
+                "id": 70,
+                "values": [
+                  {
+                    "value": "Оружие стреляет",
+                    "id": 11893315,
+                    "quantifier": null
+                  }
+                ]
+              },
+              {
+                "name": "Интерактивные функции",
+                "unit": null,
+                "id": 15526,
+                "values": [
+                  {
+                    "value": "Подвижные элементы",
+                    "id": 9170638,
+                    "quantifier": null
+                  }
+                ]
+              },
+              {
+                "name": "Комплектация",
+                "unit": null,
+                "id": 69,
+                "values": [
+                  {
+                    "value": "Детали конструктора",
+                    "id": 11893309,
+                    "quantifier": null
+                  },
+                  {
+                    "value": "Минифигурка x 2",
+                    "id": 13146865,
+                    "quantifier": null
+                  },
+                  {
+                    "value": "Фигурка животного x 1",
+                    "id": 13146811,
+                    "quantifier": null
+                  },
+                  {
+                    "value": "Разделитель кубиков x 1",
+                    "id": 13146869,
+                    "quantifier": null
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Корпус и материал",
+            "id": 4801,
+            "attributes": [
+              {
+                "name": "Материал конструктора",
+                "unit": null,
+                "id": 104497,
+                "values": [
+                  {
+                    "value": "Пластик",
+                    "id": 349669,
+                    "quantifier": null
+                  }
+                ]
+              },
+              {
+                "name": "Цвет",
+                "unit": null,
+                "id": 15,
+                "values": [
+                  {
+                    "value": "Белый",
+                    "id": 264921,
+                    "quantifier": null
+                  },
+                  {
+                    "value": "Зеленый",
+                    "id": 290629,
+                    "quantifier": null
+                  },
+                  {
+                    "value": "Розовый",
+                    "id": 384841,
+                    "quantifier": null
+                  },
+                  {
+                    "value": "Коричневый",
+                    "id": 356478,
+                    "quantifier": null
+                  },
+                  {
+                    "value": "Серый",
+                    "id": 249743,
+                    "quantifier": null
+                  },
+                  {
+                    "value": "Голубой",
+                    "id": 182108,
+                    "quantifier": null
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Габариты и вес упаковки",
+            "id": 6229,
+            "attributes": [
+              {
+                "name": "Тип упаковки",
+                "unit": null,
+                "id": 18103,
+                "values": [
+                  {
+                    "value": "Коробка",
+                    "id": 982993,
+                    "quantifier": null
+                  }
+                ]
+              },
+              {
+                "name": "Ширина упаковки",
+                "unit": "см",
+                "id": 1846,
+                "values": [
+                  {
+                    "value": "26.2",
+                    "id": 1930325,
+                    "quantifier": null
+                  }
+                ]
+              },
+              {
+                "name": "Высота упаковки",
+                "unit": "см",
+                "id": 1839,
+                "values": [
+                  {
+                    "value": "5.7",
+                    "id": 155910,
+                    "quantifier": null
+                  }
+                ]
+              },
+              {
+                "name": "Глубина упаковки",
+                "unit": "см",
+                "id": 6382,
+                "values": [
+                  {
+                    "value": "38.2",
+                    "id": 1180543,
+                    "quantifier": null
+                  }
+                ]
+              },
+              {
+                "name": "Вес упаковки",
+                "unit": "кг",
+                "id": 48692,
+                "values": [
+                  {
+                    "value": "0.654",
+                    "id": 1129084,
+                    "quantifier": null
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Страна и гарантия",
+            "id": 6239,
+            "attributes": [
+              {
+                "name": "Страна-производитель",
+                "unit": null,
+                "id": 319,
+                "values": [
+                  {
+                    "value": "Китай",
+                    "id": 138,
+                    "quantifier": null
+                  }
+                ]
+              },
+              {
+                "name": "Родина бренда",
+                "unit": null,
+                "id": 73852,
+                "values": [
+                  {
+                    "value": "Дания",
+                    "id": 617695,
+                    "quantifier": null
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Service Attributes",
+            "id": 38952,
+            "attributes": [
+              {
+                "name": "Theme",
+                "unit": null,
+                "id": 126016,
+                "values": [
+                  {
+                    "value": "Disney Princess",
+                    "id": 2141251,
+                    "quantifier": null
+                  }
+                ]
+              },
+              {
+                "name": "Theme_1",
+                "unit": null,
+                "id": 126058,
+                "values": [
+                  {
+                    "value": "LEGO® Disney Princess™",
+                    "id": 13866110,
+                    "quantifier": null
+                  }
+                ]
+              },
+              {
+                "name": "LEGO Product No",
+                "unit": null,
+                "id": 126017,
+                "values": [
+                  {
+                    "value": "41153",
+                    "id": 13005220,
+                    "quantifier": null
+                  }
+                ]
+              },
+              {
+                "name": "Russian Description",
+                "unit": null,
+                "id": 126018,
+                "values": [
+                  {
+                    "value": "Королевский корабль Ариэль",
+                    "id": 13179060,
+                    "quantifier": null
+                  }
+                ]
+              },
+              {
+                "name": "Age Mark",
+                "unit": null,
+                "id": 126019,
+                "values": [
+                  {
+                    "value": "6-12",
+                    "id": 3721225,
+                    "quantifier": null
+                  }
+                ]
+              },
+              {
+                "name": "Launch Date",
+                "unit": null,
+                "id": 126020,
+                "values": [
+                  {
+                    "value": "01/01/2018",
+                    "id": 13424973,
+                    "quantifier": null
+                  }
+                ]
+              },
+              {
+                "name": "Product Number",
+                "unit": null,
+                "id": 126023,
+                "values": [
+                  {
+                    "value": "41153",
+                    "id": 13005220,
+                    "quantifier": null
+                  }
+                ]
+              },
+              {
+                "name": "Product Name",
+                "unit": null,
+                "id": 93280,
+                "values": [
+                  {
+                    "value": "Ariel's Royal Celebration Boat",
+                    "id": 13425052,
+                    "quantifier": null
+                  }
+                ]
+              },
+              {
+                "name": "Product Piece Count",
+                "unit": null,
+                "id": 126024,
+                "values": [
+                  {
+                    "value": "380",
+                    "id": 260837,
+                    "quantifier": null
+                  }
+                ]
+              },
+              {
+                "name": "Age Mark Description",
+                "unit": null,
+                "id": 126025,
+                "values": [
+                  {
+                    "value": "6-12",
+                    "id": 3721225,
+                    "quantifier": null
+                  }
+                ]
+              },
+              {
+                "name": "Age Mark From",
+                "unit": null,
+                "id": 126026,
+                "values": [
+                  {
+                    "value": "6",
+                    "id": 2,
+                    "quantifier": null
+                  }
+                ]
+              },
+              {
+                "name": "Age Mark To",
+                "unit": null,
+                "id": 126027,
+                "values": [
+                  {
+                    "value": "12",
+                    "id": 780,
+                    "quantifier": null
+                  }
+                ]
+              },
+              {
+                "name": "E A N Barcode",
+                "unit": null,
+                "id": 126033,
+                "values": [
+                  {
+                    "value": "5702016111675",
+                    "id": 13421982,
+                    "quantifier": null
+                  }
+                ]
+              },
+              {
+                "name": "Packaging Height (mm )",
+                "unit": null,
+                "id": 126034,
+                "values": [
+                  {
+                    "value": "56.5",
+                    "id": 1133006,
+                    "quantifier": null
+                  }
+                ]
+              },
+              {
+                "name": "Packaging Width (mm )",
+                "unit": null,
+                "id": 126035,
+                "values": [
+                  {
+                    "value": "262",
+                    "id": 995286,
+                    "quantifier": null
+                  }
+                ]
+              },
+              {
+                "name": "Packaging Length (mm )",
+                "unit": null,
+                "id": 126036,
+                "values": [
+                  {
+                    "value": "382",
+                    "id": 151966,
+                    "quantifier": null
+                  }
+                ]
+              },
+              {
+                "name": "Content status",
+                "unit": null,
+                "id": 127711,
+                "values": [
+                  {
+                    "value": "Available",
+                    "id": 13819140,
+                    "quantifier": null
+                  }
+                ]
+              },
+              {
+                "name": "Product Category",
+                "unit": null,
+                "id": 91531,
+                "values": [
+                  {
+                    "value": "Standard Retail",
+                    "id": 13819137,
+                    "quantifier": null
+                  }
+                ]
+              },
+              {
+                "name": "Russia/CIS Exit Date",
+                "unit": null,
+                "id": 128144,
+                "values": [
+                  {
+                    "value": "31/12/2019",
+                    "id": 13826148,
+                    "quantifier": null
+                  }
+                ]
+              },
+              {
+                "name": "RRP Price Russia RUB",
+                "unit": null,
+                "id": 128145,
+                "values": [
+                  {
+                    "value": "3799",
+                    "id": 6483638,
+                    "quantifier": null
+                  }
+                ]
+              },
+              {
+                "name": "Battery indication",
+                "unit": null,
+                "id": 128233,
+                "values": [
+                  {
+                    "value": "Батарейки не требуются",
+                    "id": 13897790,
+                    "quantifier": null
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "id": "180116090449136",
+        "shortId": 2063905,
+        "date": "2019-05-08 15:34:38",
+        "article": "Конструктор LEGO Disney Princess 41153 Королевский корабль Ариэль",
+        "manufacturer": "LEGO",
+        "brand": "LEGO",
+        "partNumber": "41153",
+        "ean": "5702016111675",
+        "family": null,
+        "series": "Disney Princess",
+        "model": "Королевский корабль Ариэль",
+        "baseImage": "http://content-house.pro/cs/api/getProductFile?type=images&productId=180116090449136&login=lego&password=e7ddaob3&name=41153_Prod&extension=jpg&customerId=85&compression=50",
+        "longName": null,
+        "shortName": null,
+        "annotation": "<br>Устрой незабываемый праздник с принцессой Ариэль и Эриком. Отправляйся в плавание на королевском корабле и сделай вид, что подыгрываешь Себастьяну, вращая морскую звезду в такт музыки, пока все танцуют на крутящемся танцполе. Попробуй торт, поиграй с псом Максом и отыщи сокровища Ариэль, спрятанные в корпусе корабля, а затем запусти красочные фейерверки на корме судна! Строй и перестраивай этот набор разными способами и создавай бесконечное количество морских историй.",
+        "categoryIdStr": "01010112",
+        "categoryId": 70049,
+        "videos": [
+          {
+            "id": 580868251,
+            "name": "https://youtu.be/B9lmGZg2Gn8"
+          },
+          {
+            "id": 580868266,
+            "name": "https://youtu.be/jkhPZsw-Z0w"
+          }
+        ],
+        "images": [
+          {
+            "id": 580868129,
+            "name": "http://content-house.pro/cs/api/getProductFile?type=images&productId=180116090449136&login=lego&password=e7ddaob3&name=41153_Box1&extension=jpg&customerId=85&compression=50"
+          },
+          {
+            "id": 580868139,
+            "name": "http://content-house.pro/cs/api/getProductFile?type=images&productId=180116090449136&login=lego&password=e7ddaob3&name=41153_Box2&extension=jpg&customerId=85&compression=50"
+          },
+          {
+            "id": 580868143,
+            "name": "http://content-house.pro/cs/api/getProductFile?type=images&productId=180116090449136&login=lego&password=e7ddaob3&name=41153_Front&extension=jpg&customerId=85&compression=50"
+          },
+          {
+            "id": 580868148,
+            "name": "http://content-house.pro/cs/api/getProductFile?type=images&productId=180116090449136&login=lego&password=e7ddaob3&name=41153_Func&extension=jpg&customerId=85&compression=50"
+          },
+          {
+            "id": 580868153,
+            "name": "http://content-house.pro/cs/api/getProductFile?type=images&productId=180116090449136&login=lego&password=e7ddaob3&name=41153_MF01&extension=jpg&customerId=85&compression=50"
+          },
+          {
+            "id": 580868160,
+            "name": "http://content-house.pro/cs/api/getProductFile?type=images&productId=180116090449136&login=lego&password=e7ddaob3&name=41153_MF02&extension=jpg&customerId=85&compression=50"
+          },
+          {
+            "id": 580868163,
+            "name": "http://content-house.pro/cs/api/getProductFile?type=images&productId=180116090449136&login=lego&password=e7ddaob3&name=41153_MF03&extension=jpg&customerId=85&compression=50"
+          },
+          {
+            "id": 580868171,
+            "name": "http://content-house.pro/cs/api/getProductFile?type=images&productId=180116090449136&login=lego&password=e7ddaob3&name=41153_MF04&extension=jpg&customerId=85&compression=50"
+          },
+          {
+            "id": 580868174,
+            "name": "http://content-house.pro/cs/api/getProductFile?type=images&productId=180116090449136&login=lego&password=e7ddaob3&name=41153_MF05&extension=jpg&customerId=85&compression=50"
+          },
+          {
+            "id": 580868182,
+            "name": "http://content-house.pro/cs/api/getProductFile?type=images&productId=180116090449136&login=lego&password=e7ddaob3&name=41153_MF06&extension=jpg&customerId=85&compression=50"
+          },
+          {
+            "id": 580868185,
+            "name": "http://content-house.pro/cs/api/getProductFile?type=images&productId=180116090449136&login=lego&password=e7ddaob3&name=41153_MF07&extension=jpg&customerId=85&compression=50"
+          },
+          {
+            "id": 580868194,
+            "name": "http://content-house.pro/cs/api/getProductFile?type=images&productId=180116090449136&login=lego&password=e7ddaob3&name=41153_MF08&extension=jpg&customerId=85&compression=50"
+          },
+          {
+            "id": 580868197,
+            "name": "http://content-house.pro/cs/api/getProductFile?type=images&productId=180116090449136&login=lego&password=e7ddaob3&name=41153_MF09&extension=jpg&customerId=85&compression=50"
+          },
+          {
+            "id": 580868210,
+            "name": "http://content-house.pro/cs/api/getProductFile?type=images&productId=180116090449136&login=lego&password=e7ddaob3&name=41153_WEB01&extension=jpg&customerId=85&compression=50"
+          },
+          {
+            "id": 580868221,
+            "name": "http://content-house.pro/cs/api/getProductFile?type=images&productId=180116090449136&login=lego&password=e7ddaob3&name=41153_WEB02&extension=jpg&customerId=85&compression=50"
+          }
+        ],
+        "instructions": [
+          {
+            "id": 580868280,
+            "name": "http://content-house.pro/cs/api/getProductFile?productId=180116090449136&login=lego&password=e7ddaob3&name=instruction_41153m1&extension=pdf&type=instructions"
+          }
+        ],
+        "htmlContent": [],
+        "certificates": []
+      }
+    ],
+    "totalRows": null,
+    "error": null,
+    "success": true
+  }
+}

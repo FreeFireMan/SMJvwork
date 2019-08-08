@@ -1,5 +1,7 @@
 package com.example.demo.db.model;
 
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 
@@ -7,25 +9,25 @@ import java.util.ArrayDeque;
 import java.util.Collection;
 
 @Data
-public class CategoryNode implements CatalogNode {
+public class CategoryNode {
 
-    @Id
-    private String id;
-    private String name;
-    private String categoryId;
-    private String path;
-    private String weight;
-    private Collection<CatalogNode> children = new ArrayDeque<CatalogNode>();
+    private CategoryHolder value;
+    private Collection<CategoryNode> children = new ArrayDeque<>();
 
-    public CategoryNode(String id, String name, String categoryId, String path, String weight) {
-        this.id = id;
-        this.name = name;
-        this.categoryId = categoryId;
-        this.path = path;
-        this.weight = weight;
+    public CategoryNode(CategoryHolder value) {
+        this.value = value;
     }
 
-    public void append(CatalogNode node) {
+    public void append(CategoryNode node) {
         children.add(node);
+    }
+
+    public ObjectNode toJson() {
+        ObjectNode root = value.getValue();
+        ArrayNode children = root.putArray("children");
+        for (CategoryNode c: this.children) {
+            children.add(c.toJson());
+        }
+        return root;
     }
 }

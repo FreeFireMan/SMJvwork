@@ -62,6 +62,6 @@ public class CatalogService {
 
     public Optional<ObjectNode> get() {
         List<ObjectNode> nodes = mongoTemplate.findAll(ObjectNode.class, COLL_CATALOG);
-        return OptionalUtils.<ObjectNode>head(nodes);
+        return OptionalUtils.head(nodes);
     }
 }

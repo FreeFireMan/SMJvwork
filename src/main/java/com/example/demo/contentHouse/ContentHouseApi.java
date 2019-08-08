@@ -2,21 +2,22 @@ package com.example.demo.contentHouse;
 
 import com.example.demo.contentHouse.api.ContentHouseResponse;
 import com.example.demo.contentHouse.api.Page;
-import com.example.demo.contentHouse.api.PageItem;
-import com.example.demo.contentHouse.model.CategoryDefinition;
-import com.example.demo.contentHouse.model.ProductDefinition;
-import com.example.demo.utils.OptionalUtils;
+import com.example.demo.db.model.CategoryHolder;
+import com.example.demo.db.model.LongProductHolder;
+import com.example.demo.db.model.ShortProductHolder;
 import com.example.demo.utils.RequestResponseLoggingInterceptor;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.Data;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Component
 @Data
@@ -25,14 +26,15 @@ public class ContentHouseApi {
     private static final String API_USER = "lego";
     private static final String API_PASSWORD = "e7ddaob3";
     private static final String API_HOST = "content-house.pro";
-    private static final String API_PATH = "/cs/api/export/categories";
+    private static final String API_PATH = "/cs/api/export";
     private static final String API_SCHEMA = "http";
 
-    static String uri(String id, String subPath) {
+    private static String uri(String entity, Object id, String subPath) {
         StringBuilder sb = new StringBuilder();
         sb.append(API_SCHEMA).append("://");
         sb.append(API_HOST);
         sb.append(API_PATH).append('/');
+        sb.append(entity).append('/');
         sb.append(id);
         if (subPath != null) {
             sb.append('/').append(subPath);
@@ -79,12 +81,27 @@ public class ContentHouseApi {
      * @param id category id
      * @return
      */
-    public Optional<CategoryDefinition> fetchCategory(String id) {
-        return fetchPage(uri(id, null)).flatMap(page -> {
-                List<PageItem> items = page.getPageItems();
+    public Optional<CategoryHolder> fetchCategory(int id) {
+        return fetchPage(uri("categories", id, null)).flatMap(page -> {
+                List<ObjectNode> items = page.getPageItems();
                 if (items.isEmpty()) return Optional.empty(); else {
-                    return safeNotNull(() -> items.iterator().next()).flatMap(PageItem::toCategory);
+                    return safeNotNull(() -> new CategoryHolder(items.iterator().next()));
                 }
+        });
+    }
+
+    /**
+     * Returns a category definition
+     *
+     * @param id category id
+     * @return
+     */
+    public Optional<LongProductHolder> fetchProduct(String id) {
+        return fetchPage(uri("products", id, null)).flatMap(page -> {
+            List<ObjectNode> items = page.getPageItems();
+            if (items.isEmpty()) return Optional.empty(); else {
+                return safeNotNull(() -> new LongProductHolder(items.iterator().next()));
+            }
         });
     }
 
@@ -94,14 +111,14 @@ public class ContentHouseApi {
      * @param id parent category id
      * @return
      */
-    public Optional<List<CategoryDefinition>> fetchCategoriesOf(String id) {
-        return fetchPage(uri(id, "children")).map(page -> {
-            List<PageItem> items = page.getPageItems();
-            if (items != null) {
-                Stream<CategoryDefinition> categories = items.stream().flatMap(o -> OptionalUtils.toStream(o.toCategory()));
-                return categories.collect(Collectors.toList());
-            } else
+    public Optional<List<CategoryHolder>> fetchCategoriesOf(int id) {
+        return fetchPage(uri("categories", id, "children")).map(page -> {
+            List<ObjectNode> items = page.getPageItems();
+            if (items == null) {
                 return Collections.emptyList();
+            } else {
+                return items.stream().map(CategoryHolder::new).collect(Collectors.toList());
+            }
         });
     }
 
@@ -110,11 +127,14 @@ public class ContentHouseApi {
      * @param id
      * @return
      */
-    public Optional<List<ProductDefinition>> fetchProductsOf(String id) {
-        return fetchPage(uri(id, "products")).map(page -> {
-            List<PageItem> items = page.getPageItems();
-            Stream<ProductDefinition> products = items.stream().flatMap(o -> OptionalUtils.toStream(o.toProduct()));
-            return products.collect(Collectors.toList());
+    public Optional<List<ShortProductHolder>> fetchProductsOf(int id) {
+        return fetchPage(uri("categories", id, "products")).map(page -> {
+            List<ObjectNode> items = page.getPageItems();
+            if (items == null) {
+                return Collections.emptyList();
+            } else {
+                return items.stream().map(ShortProductHolder::new).collect(Collectors.toList());
+            }
         });
     }
 }

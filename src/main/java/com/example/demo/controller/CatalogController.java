@@ -1,40 +1,80 @@
 package com.example.demo.controller;
 
 
-import com.example.demo.db.model.CatalogNode;
 import com.example.demo.service.catalog.CatalogService;
+import com.example.demo.service.category.CategoryService;
+import com.example.demo.service.product.ProductService;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
+import java.util.Iterator;
 
 @Slf4j
 @Controller
-@RequestMapping("api/catalog")
+@RequestMapping("api")
 public class CatalogController {
 
     @Autowired
     CatalogService catalogService;
 
-    @PostMapping("/upgrade")
+    @Autowired
+    CategoryService categoryService;
+
+    @Autowired
+    ProductService productService;
+
+    @PostMapping("/catalog/renew")
     @ResponseBody
-    public void doFetch() {
+    public void doFetchAndUpdate() {
         if (log.isInfoEnabled()) log.info("fetch request received");
         catalogService.fetchAndUpdate();
     }
 
-    @GetMapping("/")
+    @GetMapping("/catalog")
     @ResponseBody
-    public ResponseEntity<CatalogNode> doGet() {
+    public ResponseEntity<ObjectNode> doGetCatalog() {
         return catalogService.get()
             .map(n -> new ResponseEntity<>(n, HttpStatus.OK))
             .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
+    @GetMapping("/categories/{id}")
+    @ResponseBody
+    public ResponseEntity<ObjectNode> doGetCategory(@PathVariable("id") int id) {
+        return categoryService.findById(id)
+            .map(n -> new ResponseEntity<>(n, HttpStatus.OK))
+            .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
+    @GetMapping("/categories/{id}/categories")
+    @ResponseBody
+    public Iterator<ObjectNode> doGetCategories(@PathVariable("id") int parentId) {
+        return categoryService.findByParentId(parentId);
+    }
+
+    @GetMapping("/categories/{id}/products")
+    @ResponseBody
+    public Iterator<ObjectNode> doGetProducts(@PathVariable("id") int categoryId) {
+        return productService.findByCategoryId(categoryId);
+    }
+
+    @GetMapping("/products/{id}")
+    @ResponseBody
+    public ResponseEntity<ObjectNode>  doGetProductShort(@PathVariable("id") String id) {
+        return productService.findShortById(id)
+                .map(n -> new ResponseEntity<>(n, HttpStatus.OK))
+                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));    }
+
+    @GetMapping("/products/{id}/full")
+    @ResponseBody
+    public ResponseEntity<ObjectNode>  doGetProductLong(@PathVariable("id") String id) {
+        return productService.findLongById(id)
+                .map(n -> new ResponseEntity<>(n, HttpStatus.OK))
+                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 }

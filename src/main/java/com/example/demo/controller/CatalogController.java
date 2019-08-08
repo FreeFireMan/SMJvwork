@@ -32,6 +32,7 @@ public class CatalogController {
     @ResponseBody
     public void doFetchAndUpdate() {
         if (log.isInfoEnabled()) log.info("fetch request received");
+
         catalogService.fetchAndUpdate();
     }
 

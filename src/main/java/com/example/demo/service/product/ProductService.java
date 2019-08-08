@@ -30,7 +30,7 @@ public class ProductService {
         ObjectNode res = mongoTemplate.findOne(
                 Query.query(Criteria.where("id").is(id)),
                 ObjectNode.class,
-                COLL_PRODUCTS_SHORT);
+                COLL_PRODUCTS_LONG);
         return Optional.ofNullable(res);
     }
 

@@ -17,7 +17,7 @@ public class MongoConfig {
     private ObjectMapper mapper;
 
     @Bean
-    public MongoCustomConversions customConversions() {
+    public MongoCustomConversions jacksonObjectNodeToBSONConversions() {
         return new MongoCustomConversions(Arrays.asList(
                 new ObjectNodeReadConverter(mapper),
                 new ObjectNodeWriteConverter()));

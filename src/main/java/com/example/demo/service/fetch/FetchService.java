@@ -44,7 +44,7 @@ public class FetchService {
             api.fetchProductsOf(def.getId()).ifPresent(defs -> {
                 for (ShortProductHolder childDef: defs) {
                     callback.accept(childDef);
-                    node.append(new ShortProductNode(childDef));
+                    node.append(new ProductNode(childDef));
                     api.fetchProduct(childDef.getId()).ifPresent(callback);
                 }
             });

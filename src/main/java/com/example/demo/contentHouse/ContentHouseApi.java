@@ -20,7 +20,6 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 @Component
-@Data
 public class ContentHouseApi {
 
     private static final String API_USER = "lego";

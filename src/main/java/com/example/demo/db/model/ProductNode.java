@@ -9,12 +9,20 @@ import java.util.ArrayDeque;
 import java.util.Collection;
 
 @Data
-@AllArgsConstructor
-public class ShortProductNode {
+public class ProductNode {
 
     private ShortProductHolder value;
+    private LongProductHolder description;
+
+    public ProductNode(ShortProductHolder value) {
+        this.value = value;
+    }
 
     public ObjectNode toJson() {
-        return value.getValue();
+        ObjectNode root = value.getValue();
+        if (description != null) {
+            root.set("longDescription", description.getValue());
+        }
+        return root;
     }
 }

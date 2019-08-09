@@ -18,6 +18,6 @@ public class DemoApplication {
 
     public static void main(String[] args) {
         ConfigurableApplicationContext ctx = SpringApplication.run(DemoApplication.class, args);
-        ctx.getBean(ReactiveCatalogService.class).fetchAndUpdate().subscribe(System.out::println, System.err::println);
+        // ctx.getBean(ReactiveCatalogService.class).fetchAndUpdate().subscribe(System.out::println, System.err::println);
     }
 }

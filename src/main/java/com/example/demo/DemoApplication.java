@@ -8,6 +8,8 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
+import javax.servlet.MultipartConfigElement;
+
 @EnableScheduling
 @SpringBootApplication
 public class DemoApplication {
@@ -15,5 +17,8 @@ public class DemoApplication {
     public static void main(String[] args) {
         ConfigurableApplicationContext ctx = SpringApplication.run(DemoApplication.class, args);
         // ctx.getBean(CatalogService.class).fetchAndUpdate();
+
+        MultipartConfigElement configElement = new MultipartConfigElement("",10000000,10000000,10000000);
+
     }
 }

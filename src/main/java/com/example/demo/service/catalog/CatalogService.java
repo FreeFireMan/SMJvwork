@@ -14,7 +14,13 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+
 import static com.example.demo.db.CollectionsConfig.*;
+
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -43,6 +49,13 @@ public class CatalogService {
                 longProds.add(n.getValue());
             }
         });
+        String liksOnFoto ="";
+
+        for (ObjectNode n : shortProds
+             ) {
+            liksOnFoto = new ShortProductHolder(n).getbaseImage();
+
+        }
 
         mongoTemplate.findAllAndRemove(new Query(), COLL_CATEGORIES);
         if (!categories.isEmpty())
@@ -64,4 +77,5 @@ public class CatalogService {
         List<ObjectNode> nodes = mongoTemplate.findAll(ObjectNode.class, COLL_CATALOG);
         return OptionalUtils.head(nodes);
     }
+
 }

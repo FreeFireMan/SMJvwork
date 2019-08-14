@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 @Data
 public class ContentHouseApi {
 
+
     private static final String API_USER = "lego";
     private static final String API_PASSWORD = "e7ddaob3";
     private static final String API_HOST = "content-house.pro";
@@ -52,6 +53,7 @@ public class ContentHouseApi {
     }
 
     private RestTemplate restTemplate = makeRestTemplate();
+
 
     private <T> Optional<T> ifFound(Supplier<T> fn) {
         try {

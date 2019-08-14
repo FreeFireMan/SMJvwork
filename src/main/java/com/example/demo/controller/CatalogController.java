@@ -17,7 +17,7 @@ import java.util.Date;
 import java.util.Iterator;
 
 @Slf4j
-@Controller
+@RestController
 @RequestMapping("api")
 public class CatalogController {
 
@@ -36,7 +36,6 @@ public class CatalogController {
     ProductService productService;
 
     @PostMapping("/catalog/renew")
-    @ResponseBody
     public void doFetchAndUpdate() {
         if (log.isInfoEnabled()) log.info("fetch request received");
 
@@ -44,7 +43,6 @@ public class CatalogController {
     }
 
     @GetMapping("/catalog")
-    @ResponseBody
     public ResponseEntity<ObjectNode> doGetCatalog() {
         return catalogService.get()
             .map(n -> new ResponseEntity<>(n, HttpStatus.OK))
@@ -52,7 +50,6 @@ public class CatalogController {
     }
 
     @GetMapping("/categories/{id}")
-    @ResponseBody
     public ResponseEntity<ObjectNode> doGetCategory(@PathVariable("id") int id) {
         return categoryService.findById(id)
             .map(n -> new ResponseEntity<>(n, HttpStatus.OK))
@@ -60,26 +57,22 @@ public class CatalogController {
     }
 
     @GetMapping("/categories/{id}/categories")
-    @ResponseBody
     public Iterator<ObjectNode> doGetCategories(@PathVariable("id") int parentId) {
         return categoryService.findByParentId(parentId);
     }
 
     @GetMapping("/categories/{id}/products")
-    @ResponseBody
     public Iterator<ObjectNode> doGetProducts(@PathVariable("id") int categoryId) {
         return productService.findByCategoryId(categoryId);
     }
 
     @GetMapping("/products/{id}")
-    @ResponseBody
     public ResponseEntity<ObjectNode>  doGetProductShort(@PathVariable("id") String id) {
         return productService.findShortById(id)
                 .map(n -> new ResponseEntity<>(n, HttpStatus.OK))
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));    }
 
     @GetMapping("/products/{id}/full")
-    @ResponseBody
     public ResponseEntity<ObjectNode>  doGetProductLong(@PathVariable("id") String id) {
         return productService.findLongById(id)
                 .map(n -> new ResponseEntity<>(n, HttpStatus.OK))

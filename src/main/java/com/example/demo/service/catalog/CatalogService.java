@@ -5,6 +5,7 @@ import com.example.demo.db.model.CategoryNode;
 import com.example.demo.db.model.LongProductHolder;
 import com.example.demo.db.model.ShortProductHolder;
 import com.example.demo.service.fetch.FetchService;
+import com.example.demo.service.image.ImageService;
 import com.example.demo.utils.OptionalUtils;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.extern.slf4j.Slf4j;
@@ -35,6 +36,9 @@ public class CatalogService {
     @Autowired
     private FetchService fetchService;
 
+    @Autowired
+    private ImageService imageService;
+
     public void fetchAndUpdate() {
         final List<ObjectNode> categories = new ArrayList<>();
         final List<ObjectNode> shortProds = new ArrayList<>();
@@ -49,11 +53,11 @@ public class CatalogService {
                 longProds.add(n.getValue());
             }
         });
-        String liksOnFoto ="";
+
 
         for (ObjectNode n : shortProds
              ) {
-            liksOnFoto = new ShortProductHolder(n).getbaseImage();
+            imageService.saveImageInServer(new ShortProductHolder(n).getbaseImage());
 
         }
 

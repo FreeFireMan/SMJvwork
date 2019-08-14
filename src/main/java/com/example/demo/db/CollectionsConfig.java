@@ -19,6 +19,8 @@ public class CollectionsConfig {
 
     static final public String COLL_CATALOG = "catalog";
 
+    static final public String COLL_CATALOG_NODE = "catalogNode";
+
     @Autowired
     private MongoTemplate mongoTemplate;
 

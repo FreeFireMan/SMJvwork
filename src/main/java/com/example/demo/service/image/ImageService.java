@@ -1,16 +1,23 @@
 package com.example.demo.service.image;
 
 import com.example.demo.utils.RequestResponseLoggingInterceptor;
+import lombok.Data;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Collections;
 @Service
+@Data
 public class ImageService {
 
 
@@ -23,22 +30,55 @@ public class ImageService {
         return t;
     }
     private RestTemplate restTemplate = makeRestTemplate();
+    /* private RestTemplate restTemplate = new RestTemplate();*/
 
     public  void  saveImageInServer(String url){
 
         byte[] image = restTemplate.getForObject(url, byte[].class);
-        MultiValueMap<String, String> parameters =
-                UriComponentsBuilder.fromUriString(url).build().getQueryParams();
+
         StringBuilder name = new StringBuilder();
         name.append(PATH);
-        name.append(parameters.get("name").get(0));
-        name.append(IMAGE_JPG);
+        name.append(getOriginalName(url));
+
+
         try {
-            Files.write(Paths.get(String.valueOf(name)), image);
+            ImageIO.write(resizeImage(image,250,250),"jpg",new File(name.toString()+"." ));
         } catch (
                 IOException e) {
             e.printStackTrace();
         }
     }
+
+    public String getOriginalName(String url)
+    {
+        StringBuilder nameImages = new StringBuilder();
+        MultiValueMap<String, String> parameters =
+                UriComponentsBuilder.fromUriString(url).build().getQueryParams();
+        nameImages.append(parameters.get("name").get(0));
+        nameImages.append(IMAGE_JPG);
+        return String.valueOf(nameImages);
+    }
+    public BufferedImage resizeImage(byte[]  image,int scaledWidth, int scaledHeight){
+
+        ByteArrayInputStream bais = new ByteArrayInputStream(image);
+
+        BufferedImage inputImage = null;
+        try {
+            inputImage = ImageIO.read(bais);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+        BufferedImage outputImage =  new BufferedImage(scaledWidth, scaledHeight, inputImage.getType());
+        // scales the input image to the output image
+        Graphics2D g2d = outputImage.createGraphics();
+        g2d.drawImage(inputImage, 0, 0, scaledWidth, scaledHeight, null);
+        g2d.dispose();
+
+        return outputImage;
+
+    }
+
 
 }

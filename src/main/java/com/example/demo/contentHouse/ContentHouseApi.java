@@ -69,6 +69,7 @@ public class ContentHouseApi {
             return Optional.ofNullable(fn.get());
         } catch (Throwable ex) {
             return Optional.empty();
+
         }
     }
 

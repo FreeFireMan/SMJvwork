@@ -13,5 +13,8 @@ public class ShortProductHolder implements ModelHolder {
 
     public String getId() { return value.get("id").asText("-"); }
     public String getbaseImage(){return value.get("baseImage").asText("no_Image");}
+    public void  setBaseImage(String url){
+        value.put("baseImage",url);
+    }
 
 }

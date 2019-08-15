@@ -39,6 +39,8 @@ public class CatalogService {
     @Autowired
     private ImageService imageService;
 
+    private String imageStore = "http://localhost:8080/";
+
     public void fetchAndUpdate() {
         final List<ObjectNode> categories = new ArrayList<>();
         final List<ObjectNode> shortProds = new ArrayList<>();
@@ -49,17 +51,21 @@ public class CatalogService {
                 categories.add(n.getValue());
             } else if (n instanceof ShortProductHolder) {
                 shortProds.add(n.getValue());
+                String url = ((ShortProductHolder) n).getbaseImage();
+                imageService.saveImageInServer(url);
+                ((ShortProductHolder) n).setBaseImage(imageStore+imageService.getOriginalName(url));
             } else if (n instanceof LongProductHolder) {
                 longProds.add(n.getValue());
             }
         });
 
 
-        for (ObjectNode n : shortProds
+        /*for (ObjectNode n : shortProds
              ) {
             imageService.saveImageInServer(new ShortProductHolder(n).getbaseImage());
 
-        }
+
+        }*/
 
         mongoTemplate.findAllAndRemove(new Query(), COLL_CATEGORIES);
         if (!categories.isEmpty())

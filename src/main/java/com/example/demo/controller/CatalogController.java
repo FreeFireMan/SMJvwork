@@ -78,4 +78,8 @@ public class CatalogController {
                 .map(n -> new ResponseEntity<>(n, HttpStatus.OK))
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
+    @GetMapping("/shortproducts/{id}")
+    public Iterator<ObjectNode> doGetShortCatalog(@PathVariable("id") int id) {
+        return productService.get(id);
+    }
 }

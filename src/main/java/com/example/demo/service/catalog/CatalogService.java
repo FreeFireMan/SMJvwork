@@ -51,21 +51,26 @@ public class CatalogService {
                 categories.add(n.getValue());
             } else if (n instanceof ShortProductHolder) {
                 shortProds.add(n.getValue());
-                String url = ((ShortProductHolder) n).getbaseImage();
-                imageService.saveImageInServer(url);
-                ((ShortProductHolder) n).setBaseImage(imageStore+imageService.getOriginalName(url));
             } else if (n instanceof LongProductHolder) {
                 longProds.add(n.getValue());
+
             }
         });
 
 
-        /*for (ObjectNode n : shortProds
+        for (ObjectNode n : shortProds
              ) {
-            imageService.saveImageInServer(new ShortProductHolder(n).getbaseImage());
 
-
-        }*/
+             String url = new ShortProductHolder(n).getbaseImage();
+                imageService.saveImageInServer(url,750,750,"rez750/");
+                new ShortProductHolder(n).setBaseImage(imageStore+imageService.getOriginalName(url,"rez750/"));
+        }
+        for (ObjectNode n: longProds
+             ) {
+            String url = new LongProductHolder (n).getbaseImage();
+            imageService.saveImageInServer(url,1000,1000,"rez1000/");
+            new LongProductHolder (n).setBaseImage(imageStore+imageService.getOriginalName(url,"rez1000/"));
+        }
 
         mongoTemplate.findAllAndRemove(new Query(), COLL_CATEGORIES);
         if (!categories.isEmpty())

@@ -9,4 +9,8 @@ import lombok.Data;
 public class LongProductHolder implements ModelHolder {
 
     private ObjectNode value;
+    public String getbaseImage(){return value.get("baseImage").asText("no_Image");}
+    public void  setBaseImage(String url){
+        value.put("baseImage",url);
+    }
 }

@@ -29,47 +29,59 @@ public class ImageService {
         t.setInterceptors(Collections.singletonList(new RequestResponseLoggingInterceptor()));
         return t;
     }
-    private RestTemplate restTemplate = makeRestTemplate();
-    /* private RestTemplate restTemplate = new RestTemplate();*/
+    /*private RestTemplate restTemplate = makeRestTemplate();*/
+     private RestTemplate restTemplate = new RestTemplate();
 
-    public  void  saveImageInServer(String url){
+    public  void  saveImageInServer(String url, int scaledWidth, int scaledHeight, String subPath){
 
         byte[] image = restTemplate.getForObject(url, byte[].class);
 
         StringBuilder name = new StringBuilder();
         name.append(PATH);
-        name.append(getOriginalName(url));
+        if (subPath.length() > 0){
+            name.append(subPath);
+
+        }
+        File dir = new File(name.toString());
+        boolean created = dir.mkdir();
+        if(created){
+            System.out.println("Folder has been created");
+        }
+        name.append(getOriginalName(url,""));
+
 
 
         try {
-            ImageIO.write(resizeImage(image,250,250),"jpg",new File(name.toString()+"." ));
+            ImageIO.write(resizeImage(image,scaledWidth,scaledHeight),"jpg",new File(name.toString()+"." ));
         } catch (
                 IOException e) {
             e.printStackTrace();
         }
     }
 
-    public String getOriginalName(String url)
+    public String getOriginalName(String url,String subPath)
     {
         StringBuilder nameImages = new StringBuilder();
         MultiValueMap<String, String> parameters =
                 UriComponentsBuilder.fromUriString(url).build().getQueryParams();
+        if (subPath.length() > 0){
+            nameImages.append(subPath);
+
+        }
+
         nameImages.append(parameters.get("name").get(0));
         nameImages.append(IMAGE_JPG);
+
         return String.valueOf(nameImages);
     }
     public BufferedImage resizeImage(byte[]  image,int scaledWidth, int scaledHeight){
-
         ByteArrayInputStream bais = new ByteArrayInputStream(image);
-
         BufferedImage inputImage = null;
         try {
             inputImage = ImageIO.read(bais);
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
         BufferedImage outputImage =  new BufferedImage(scaledWidth, scaledHeight, inputImage.getType());
         // scales the input image to the output image
         Graphics2D g2d = outputImage.createGraphics();
@@ -77,7 +89,6 @@ public class ImageService {
         g2d.dispose();
 
         return outputImage;
-
     }
 
 

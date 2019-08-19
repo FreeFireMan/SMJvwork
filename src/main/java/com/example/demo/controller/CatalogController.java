@@ -7,12 +7,14 @@ import com.example.demo.service.product.ProductService;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import org.springframework.data.domain.*;
 import java.util.Date;
 import java.util.Iterator;
 
@@ -78,8 +80,14 @@ public class CatalogController {
                 .map(n -> new ResponseEntity<>(n, HttpStatus.OK))
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
-    @GetMapping("/shortproducts/{id}")
-    public Iterator<ObjectNode> doGetShortCatalog(@PathVariable("id") int id) {
-        return productService.get(id);
+    @GetMapping("/shortproducts")
+    public Iterator<ObjectNode> doGetShortCatalog(@RequestParam(value="page") int page,@RequestParam(value="size") int size) {
+        return productService.get(page,size);
+
+    }
+
+    @GetMapping("/page")
+    public Page<ObjectNode> doGetPage(@RequestParam(value="page") int page,@RequestParam(value="size") int size) {
+        return productService.getPage(page-1,size);
     }
 }

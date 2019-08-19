@@ -1,11 +1,12 @@
 package com.example.demo.service.product;
 
+import com.example.demo.db.model.ModelHolder;
+import com.example.demo.db.model.ShortProductHolder;
+import com.example.demo.db.model.ShortProductNode;
 import com.example.demo.utils.OptionalUtils;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -45,8 +46,8 @@ public class ProductService {
                 ObjectNode.class,
                 COLL_PRODUCTS_SHORT);
     }
-    public  Iterator<ObjectNode> get(int count) {
-        final Pageable pageableRequest = PageRequest.of(0, count);
+    public  Iterator<ObjectNode> get(int page,int size) {
+        final Pageable pageableRequest = PageRequest.of(page, size);
         Query query = new Query();
         query.with(pageableRequest);
 
@@ -54,5 +55,16 @@ public class ProductService {
                 query,
                 ObjectNode.class,
                 COLL_PRODUCTS_SHORT);
+    }
+
+    public Page<ObjectNode> getPage(int page,int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Query query = new Query().with(pageable);
+        query.with(pageable);
+        List<ObjectNode> list = mongoTemplate.find(query, ObjectNode.class,COLL_PRODUCTS_SHORT);
+        long count = mongoTemplate.count(query,COLL_PRODUCTS_SHORT);
+        System.out.println(count);
+        Page<ObjectNode> resultPage = new PageImpl<ObjectNode>(list,pageable,count);
+        return resultPage;
     }
 }

@@ -17,4 +17,5 @@ public class ShortProductHolder implements ModelHolder {
         value.put("baseImage",url);
     }
 
+
 }

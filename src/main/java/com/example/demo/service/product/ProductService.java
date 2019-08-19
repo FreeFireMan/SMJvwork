@@ -62,7 +62,7 @@ public class ProductService {
         Query query = new Query().with(pageable);
         query.with(pageable);
         List<ObjectNode> list = mongoTemplate.find(query, ObjectNode.class,COLL_PRODUCTS_SHORT);
-        long count = mongoTemplate.count(query,COLL_PRODUCTS_SHORT);
+        long count = mongoTemplate.count(query,ObjectNode.class,COLL_PRODUCTS_SHORT);
         System.out.println(count);
         Page<ObjectNode> resultPage = new PageImpl<ObjectNode>(list,pageable,count);
         return resultPage;

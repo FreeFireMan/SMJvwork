@@ -57,13 +57,19 @@ public class ProductService {
                 COLL_PRODUCTS_SHORT);
     }
 
-    public Page<ObjectNode> getPage(int page,int size) {
+
+    public Page<ObjectNode> getPageCat(int page,int size,List<Integer>  arrCat) {
+
         Pageable pageable = PageRequest.of(page, size);
         Query query = new Query().with(pageable);
         query.with(pageable);
+        if (arrCat.size()>0) {
+            query.addCriteria(Criteria.where("categoryId").in(arrCat));
+        }
+        query.with(new Sort(Sort.Direction.DESC, "lastUpdated"));
         List<ObjectNode> list = mongoTemplate.find(query, ObjectNode.class,COLL_PRODUCTS_SHORT);
         long count = mongoTemplate.count(query,ObjectNode.class,COLL_PRODUCTS_SHORT);
-        System.out.println(count);
+
         Page<ObjectNode> resultPage = new PageImpl<ObjectNode>(list,pageable,count);
         return resultPage;
     }

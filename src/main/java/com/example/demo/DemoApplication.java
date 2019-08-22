@@ -18,7 +18,6 @@ public class DemoApplication {
         ConfigurableApplicationContext ctx = SpringApplication.run(DemoApplication.class, args);
         // ctx.getBean(CatalogService.class).fetchAndUpdate();
 
-        MultipartConfigElement configElement = new MultipartConfigElement("",10000000,10000000,10000000);
 
     }
 }

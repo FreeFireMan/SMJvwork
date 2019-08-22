@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.*;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -80,14 +81,21 @@ public class CatalogController {
                 .map(n -> new ResponseEntity<>(n, HttpStatus.OK))
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
-    @GetMapping("/shortproducts")
+    /// maybe delete this shit
+   /* @GetMapping("/shortproducts")
     public Iterator<ObjectNode> doGetShortCatalog(@RequestParam(value="page") int page,@RequestParam(value="size") int size) {
         return productService.get(page,size);
 
     }
 
-    @GetMapping("/page")
+   *//* @GetMapping("/page")
     public Page<ObjectNode> doGetPage(@RequestParam(value="page") int page,@RequestParam(value="size") int size) {
         return productService.getPage(page-1,size);
+    }*/
+
+    @GetMapping("/page")
+    public Page<ObjectNode> doGetPage(@RequestParam(value="page") int page,@RequestParam(value="size") int size,@RequestParam(value="cat") List<Integer> arrCat) {
+                return productService.getPageCat(page-1,size, arrCat);
+
     }
 }

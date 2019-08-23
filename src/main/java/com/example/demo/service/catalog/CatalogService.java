@@ -4,9 +4,12 @@ import com.example.demo.db.model.CategoryHolder;
 import com.example.demo.db.model.CategoryNode;
 import com.example.demo.db.model.LongProductHolder;
 import com.example.demo.db.model.ShortProductHolder;
+import com.example.demo.db.model.filterConfig.FilterConfig;
 import com.example.demo.service.fetch.FetchService;
 import com.example.demo.service.image.ImageService;
 import com.example.demo.utils.OptionalUtils;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +23,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import static com.example.demo.db.CollectionsConfig.*;
 
+import java.io.DataInput;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -71,6 +75,8 @@ public class CatalogService {
             imageService.saveImageInServer(url,1000,1000,"rez1000/");
             new LongProductHolder (n).setBaseImage(imageStore+imageService.getOriginalName(url,"rez1000/"));
         }
+
+
 
         mongoTemplate.findAllAndRemove(new Query(), COLL_CATEGORIES);
         if (!categories.isEmpty())

@@ -1,5 +1,6 @@
 package com.example.demo.service.product;
 
+import com.example.demo.db.model.Filter;
 import com.example.demo.db.model.ModelHolder;
 import com.example.demo.db.model.ShortProductHolder;
 import com.example.demo.db.model.ShortProductNode;
@@ -73,4 +74,5 @@ public class ProductService {
         Page<ObjectNode> resultPage = new PageImpl<ObjectNode>(list,pageable,count);
         return resultPage;
     }
+
 }

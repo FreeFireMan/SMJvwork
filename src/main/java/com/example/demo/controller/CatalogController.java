@@ -1,9 +1,13 @@
 package com.example.demo.controller;
 
 
+import com.example.demo.db.model.filterConfig.FilterConfig;
 import com.example.demo.service.catalog.CatalogService;
 import com.example.demo.service.category.CategoryService;
+import com.example.demo.service.filter.ServiceFilter;
 import com.example.demo.service.product.ProductService;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +41,8 @@ public class CatalogController {
 
     @Autowired
     ProductService productService;
+    @Autowired
+    ServiceFilter serviceFilter;
 
     @PostMapping("/catalog/renew")
     public void doFetchAndUpdate() {
@@ -81,21 +87,15 @@ public class CatalogController {
                 .map(n -> new ResponseEntity<>(n, HttpStatus.OK))
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
-    /// maybe delete this shit
-   /* @GetMapping("/shortproducts")
-    public Iterator<ObjectNode> doGetShortCatalog(@RequestParam(value="page") int page,@RequestParam(value="size") int size) {
-        return productService.get(page,size);
-
-    }
-
-   *//* @GetMapping("/page")
-    public Page<ObjectNode> doGetPage(@RequestParam(value="page") int page,@RequestParam(value="size") int size) {
-        return productService.getPage(page-1,size);
-    }*/
 
     @GetMapping("/page")
     public Page<ObjectNode> doGetPage(@RequestParam(value="page") int page,@RequestParam(value="size") int size,@RequestParam(value="cat") List<Integer> arrCat) {
-                return productService.getPageCat(page-1,size, arrCat);
+                return productService.getPageCat(page-1,size, arrCat );
+
+    }
+    @GetMapping("/test")
+    public  List<ObjectNode>  test() {
+        return serviceFilter.get();
 
     }
 }

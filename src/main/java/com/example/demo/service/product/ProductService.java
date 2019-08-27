@@ -16,6 +16,8 @@ import org.springframework.stereotype.Service;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+
 import static com.example.demo.db.CollectionsConfig.*;
 
 
@@ -59,13 +61,13 @@ public class ProductService {
     }
 
 
-    public Page<ObjectNode> getPageCat(int page,int size,List<Integer>  arrCat) {
+    public Page<ObjectNode> getPageCat(int page, int size, Set<Integer> categoryIds) {
 
         Pageable pageable = PageRequest.of(page, size);
         Query query = new Query().with(pageable);
         query.with(pageable);
-        if (arrCat.size()>0) {
-            query.addCriteria(Criteria.where("categoryId").in(arrCat));
+        if (categoryIds.size()>0) {
+            query.addCriteria(Criteria.where("categoryId").in(categoryIds));
         }
         query.with(new Sort(Sort.Direction.DESC, "lastUpdated"));
         List<ObjectNode> list = mongoTemplate.find(query, ObjectNode.class,COLL_PRODUCTS_SHORT);

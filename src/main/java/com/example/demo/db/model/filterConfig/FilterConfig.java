@@ -30,6 +30,7 @@ public class FilterConfig {
                                    group.merge((ObjectNode) attribute);
                                }
                            });
+
                         });
                     });
                 });

@@ -32,23 +32,38 @@ public class ServiceFilter {
 
     public  Map<String,JsonNode> get() {
         List<ObjectNode> nodes = mongoTemplate.findAll(ObjectNode.class, COLL_PRODUCTS_LONG);
-        List<FilterConfig> nodesGroups = null;
         Map<String,JsonNode> groups = new HashMap<>();
-        filter.setGroups(new HashMap<>());
-        filterAttrib.setAttributes(new HashMap<>());
+
         for (ObjectNode n : nodes
         ) {
-            if (!groups.containsKey(n.get("id").asText())) {
-                ObjectNode group;
+            if (!groups.containsKey(n.get("categoryId").asText())) {
                 for (JsonNode attrib: n.get("groups")
                      ) {
-                    groups.put(n.get("id").asText(),attrib.get("attributes"));
+                    groups.put(n.get("categoryId").asText(),attrib.get("attributes"));
                 }
-            }if (groups.containsKey(n.get("id").asText())){
+            }if (groups.containsKey(n.get("categoryId").asText())){
+                JsonNode jsonNode = groups.get(n.get("categoryId").asText());
+                for (JsonNode s: n.get("groups")
+                     ) {
+                    for (JsonNode i: jsonNode
+                    ) {
+
+                        for (JsonNode k: s.get("attributes")
+                        ) {
+                            System.out.println("first i "+i.get("name"));
+                            System.out.println("first k "+k.get("name"));
+                            if (i.get("name") == k.get("name")){
+                                System.out.println("i work");
+                            }
+                        }
+                    }
+                }
+
+
 
             }
         }
-        System.out.println(groups.size());
+
         return groups;
     }
 }

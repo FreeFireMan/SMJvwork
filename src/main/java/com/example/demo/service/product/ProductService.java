@@ -70,10 +70,10 @@ public class ProductService {
             query.addCriteria(Criteria.where("categoryId").in(categoryIds));
         }
         query.with(new Sort(Sort.Direction.DESC, "lastUpdated"));
-        List<ObjectNode> list = mongoTemplate.find(query, ObjectNode.class,COLL_PRODUCTS_SHORT);
-        long count = mongoTemplate.count(query,ObjectNode.class,COLL_PRODUCTS_SHORT);
+        List<ObjectNode> list = mongoTemplate.find(query, ObjectNode.class, COLL_PRODUCTS_SHORT);
+        long count = mongoTemplate.count(query, ObjectNode.class, COLL_PRODUCTS_SHORT);
 
-        Page<ObjectNode> resultPage = new PageImpl<ObjectNode>(list,pageable,count);
+        Page<ObjectNode> resultPage = new PageImpl<ObjectNode>(list, pageable, count);
         return resultPage;
     }
 

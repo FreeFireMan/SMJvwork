@@ -17,12 +17,12 @@ public class FilterAttribute {
 
     private String name;
 
-    private Optional<String> unit;
+    private Optional<String> quantifier;
 
-    public FilterAttribute(int id, String name, Optional<String> unit) {
+    public FilterAttribute(int id, String name, Optional<String> quantifier) {
         this.id = id;
         this.name = name;
-        this.unit = unit;
+        this.quantifier = quantifier;
     }
 
     private Map<Integer, FilterAttributeValue> values;

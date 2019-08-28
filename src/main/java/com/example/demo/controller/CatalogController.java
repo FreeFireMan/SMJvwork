@@ -19,9 +19,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import org.springframework.data.domain.*;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
+
+import java.util.*;
 
 @Slf4j
 @RestController
@@ -89,12 +88,12 @@ public class CatalogController {
     }
 
     @GetMapping("/page")
-    public Page<ObjectNode> doGetPage(@RequestParam(value="page") int page,@RequestParam(value="size") int size,@RequestParam(value="cat") List<Integer> arrCat) {
-                return productService.getPageCat(page-1,size, arrCat );
+    public Page<ObjectNode> doGetPage(@RequestParam(value="page") int page,@RequestParam(value="size") int size,@RequestParam(value="cat") Set<Integer> categoryIds) {
+                return productService.getPageCat(page-1,size, categoryIds );
 
     }
     @GetMapping("/test")
-    public  List<ObjectNode>  test() {
+    public  Map<String,JsonNode> test() {
         return serviceFilter.get();
 
     }

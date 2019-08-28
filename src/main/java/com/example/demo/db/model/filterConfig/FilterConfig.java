@@ -28,10 +28,12 @@ public class FilterConfig {
                             attributes.forEach(attribute -> {
                                 if (attribute.isObject()) {
                                    group.merge((ObjectNode) attribute);
+
                                 }
                             });
 
                             groups.put(id, group);
+
                         });
                     });
                 });

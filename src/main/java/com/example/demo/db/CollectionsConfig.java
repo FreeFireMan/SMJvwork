@@ -21,6 +21,8 @@ public class CollectionsConfig {
 
     static final public String COLL_CATALOG_NODE = "catalogNode";
 
+    static final public String COLL_FILTER = "filter";
+
     @Autowired
     private MongoTemplate mongoTemplate;
 

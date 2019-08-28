@@ -58,21 +58,22 @@ public class CatalogService {
                 shortProds.add(n.getValue());
             } else if (n instanceof LongProductHolder) {
                 longProds.add(n.getValue());
-                filterConfig.merge(n.getValue());
+               // filterConfig.merge(n.getValue());
             }
         });
+
 
 
         // TODO: Image service stuff should rather be done more asynchronously without blocking
         for (ObjectNode n: shortProds) {
             String url = new ShortProductHolder(n).getbaseImage();
-            imageService.saveImageInServer(url,750,750,"rez750/");
+          //  imageService.saveImageInServer(url,750,750,"rez750/");
             new ShortProductHolder(n).setBaseImage(imageStore+imageService.getOriginalName(url,"rez750/"));
         }
 
         for (ObjectNode n: longProds) {
             String url = new LongProductHolder (n).getbaseImage();
-            imageService.saveImageInServer(url,1000,1000,"rez1000/");
+          //  imageService.saveImageInServer(url,1000,1000,"rez1000/");
             new LongProductHolder (n).setBaseImage(imageStore+imageService.getOriginalName(url,"rez1000/"));
         }
 
@@ -92,6 +93,9 @@ public class CatalogService {
         catalog.ifPresent(c -> mongoTemplate.save(c.toJson(), COLL_CATALOG));
 
         // TODO: store `filterConfig`
+
+      /*  mongoTemplate.findAllAndRemove(new Query(),COLL_FILTER);
+        mongoTemplate.bulkOps(BulkOperations.BulkMode.ORDERED,COLL_FILTER).insert(filterConfig).execute();*/
     }
 
     public Optional<ObjectNode> get() {

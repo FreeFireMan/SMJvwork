@@ -58,7 +58,7 @@ public class CatalogService {
                 shortProds.add(n.getValue());
             } else if (n instanceof LongProductHolder) {
                 longProds.add(n.getValue());
-               // filterConfig.merge(n.getValue());
+                filterConfig.merge(n.getValue());
             }
         });
 

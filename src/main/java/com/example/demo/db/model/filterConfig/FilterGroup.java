@@ -37,6 +37,8 @@ public class FilterGroup {
                             attr.merge((ObjectNode) val);
                         }
                     });
+
+                    attributes.put(id, attr);
                 });
             });
         });

@@ -22,14 +22,16 @@ public class FilterConfig {
                 optInt(gn, "id").ifPresent(id -> {
                     optStr(gn, "name").ifPresent(name -> {
                         optNode(gn, "attributes", JsonNode::isArray).ifPresent(attributes -> {
-                           if (groups == null) groups = new HashMap<>();
+                            if (groups == null) groups = new HashMap<>();
 
-                           FilterGroup group = groups.getOrDefault(id, new FilterGroup(id, name));
-                           attributes.forEach(attribute -> {
-                               if (attribute.isObject()) {
+                            FilterGroup group = groups.getOrDefault(id, new FilterGroup(id, name));
+                            attributes.forEach(attribute -> {
+                                if (attribute.isObject()) {
                                    group.merge((ObjectNode) attribute);
-                               }
-                           });
+                                }
+                            });
+
+                            groups.put(id, group);
                         });
                     });
                 });

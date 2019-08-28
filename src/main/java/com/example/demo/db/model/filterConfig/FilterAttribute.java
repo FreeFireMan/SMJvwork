@@ -32,7 +32,7 @@ public class FilterAttribute {
             optStr(node, "value").ifPresent(value -> {
                 if (values == null) values = new HashMap<>();
 
-                values.put(id, new FilterAttributeValue(id, value, optStr(node, "unit")));
+                values.put(id, new FilterAttributeValue(id, value, optStr(node, "quantifier")));
             });
         });
     }

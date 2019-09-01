@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.*;
 
@@ -29,6 +30,11 @@ public class ServiceFilter {
         ObjectNode jsonNode = mongoTemplate.findOne(new Query(),ObjectNode.class,COLL_FILTER);
         ObjectNode cat = (ObjectNode) jsonNode.get("groups").get(id);
         return cat;
+    }
+
+    public ObjectNode test(ObjectNode node) {
+        System.out.println(node);
+        return node;
     }
 }
 

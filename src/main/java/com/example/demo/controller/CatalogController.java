@@ -88,13 +88,21 @@ public class CatalogController {
     }
 
     @GetMapping("/page")
-    public Page<ObjectNode> doGetPage(@RequestParam(value="page") int page,@RequestParam(value="size") int size,@RequestParam(value="cat") Set<Integer> categoryIds) {
+    public Page<ObjectNode> doGetPage(@RequestParam(value="page") int page,@RequestParam(value="size") int size,
+                                      @RequestParam(value="cat") Set<Integer> categoryIds
+
+    ) {
+
                 return productService.getPageCat(page-1,size, categoryIds );
 
     }
-    @GetMapping("/test/{id}")
-    public  ObjectNode test(@PathVariable("id") String id) {
+    @GetMapping("/filter/{id}")
+    public  ObjectNode getFilter(@PathVariable("id") String id) {
         return serviceFilter.get(id);
 
+    }
+    @PostMapping("/test")
+    public ObjectNode test(@RequestBody ObjectNode node){
+        return serviceFilter.test(node);
     }
 }

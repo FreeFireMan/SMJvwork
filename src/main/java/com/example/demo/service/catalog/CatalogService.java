@@ -65,15 +65,16 @@ public class CatalogService {
 
 
         // TODO: Image service stuff should rather be done more asynchronously without blocking
+        System.out.println("resize shortProds");
         for (ObjectNode n: shortProds) {
             String url = new ShortProductHolder(n).getbaseImage();
-          //  imageService.saveImageInServer(url,750,750,"rez750/");
+            imageService.saveImageInServer(url,750,750,"rez750/");
             new ShortProductHolder(n).setBaseImage(imageStore+imageService.getOriginalName(url,"rez750/"));
         }
-
+        System.out.println("resize longProds");
         for (ObjectNode n: longProds) {
             String url = new LongProductHolder (n).getbaseImage();
-          //  imageService.saveImageInServer(url,1000,1000,"rez1000/");
+            imageService.saveImageInServer(url,1000,1000,"rez1000/");
             new LongProductHolder (n).setBaseImage(imageStore+imageService.getOriginalName(url,"rez1000/"));
         }
 
@@ -94,8 +95,8 @@ public class CatalogService {
 
         // TODO: store `filterConfig`
 
-      /*  mongoTemplate.findAllAndRemove(new Query(),COLL_FILTER);
-        mongoTemplate.bulkOps(BulkOperations.BulkMode.ORDERED,COLL_FILTER).insert(filterConfig).execute();*/
+        mongoTemplate.findAllAndRemove(new Query(),COLL_FILTER);
+        mongoTemplate.bulkOps(BulkOperations.BulkMode.ORDERED,COLL_FILTER).insert(filterConfig).execute();
     }
 
     public Optional<ObjectNode> get() {

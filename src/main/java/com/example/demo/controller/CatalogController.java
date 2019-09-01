@@ -93,7 +93,7 @@ public class CatalogController {
 
     }
     @GetMapping("/test")
-    public  Map<String,JsonNode> test() {
+    public  FilterConfig test() {
         return serviceFilter.get();
 
     }

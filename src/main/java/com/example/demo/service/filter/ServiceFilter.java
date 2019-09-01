@@ -2,7 +2,10 @@ package com.example.demo.service.filter;
 
 import com.example.demo.db.model.Filter;
 import com.example.demo.db.model.FilterAttrib;
+import com.example.demo.db.model.filterConfig.FilterAttribute;
+import com.example.demo.db.model.filterConfig.FilterAttributeValue;
 import com.example.demo.db.model.filterConfig.FilterConfig;
+import com.example.demo.db.model.filterConfig.FilterGroup;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -19,9 +22,9 @@ import static com.example.demo.db.CollectionsConfig.COLL_PRODUCTS_LONG;
 public class ServiceFilter {
     @Autowired
     private MongoTemplate mongoTemplate;
-    ObjectMapper mapper = new ObjectMapper();
-    private Filter filter = new Filter();
-    private FilterAttrib filterAttrib = new FilterAttrib();
+    final FilterConfig filterConfig = new FilterConfig();
+    FilterGroup filterGroup = new FilterGroup();
+    Map<String, FilterAttribute> mylist = new HashMap<>();
 
     public Filter getFilter() {
         Filter filter = new Filter();
@@ -30,41 +33,26 @@ public class ServiceFilter {
     }
 
 
-    public  Map<String,JsonNode> get() {
+    public  FilterConfig  get() {
         List<ObjectNode> nodes = mongoTemplate.findAll(ObjectNode.class, COLL_PRODUCTS_LONG);
-        Map<String,JsonNode> groups = new HashMap<>();
-
-        for (ObjectNode n : nodes
-        ) {
-            if (!groups.containsKey(n.get("categoryId").asText())) {
-                for (JsonNode attrib: n.get("groups")
-                     ) {
-                    groups.put(n.get("categoryId").asText(),attrib.get("attributes"));
-                }
-            }if (groups.containsKey(n.get("categoryId").asText())){
-                JsonNode jsonNode = groups.get(n.get("categoryId").asText());
-                for (JsonNode s: n.get("groups")
-                     ) {
-                    for (JsonNode i: jsonNode
-                    ) {
-
-                        for (JsonNode k: s.get("attributes")
-                        ) {
-                            System.out.println("first i "+i.get("name"));
-                            System.out.println("first k "+k.get("name"));
-                            if (i.get("name") == k.get("name")){
-                                System.out.println("i work");
-                            }
-                        }
-                    }
-                }
-
-
-
-            }
+        for (ObjectNode g: nodes
+             ) {
+            filterConfig.merge(g);
         }
+        filterConfig.getGroups().forEach((key,value)-> {
+            value.getAttributes().forEach((k,v)->{
+                mylist.put(v.getName(), (FilterAttribute) v.getValues());
 
-        return groups;
+            });
+        });
+        mylist.forEach((k,v)->{
+            System.out.println("KEY "+k+" : "+v);
+        });
+
+
+
+
+        return filterConfig;
     }
 }
 

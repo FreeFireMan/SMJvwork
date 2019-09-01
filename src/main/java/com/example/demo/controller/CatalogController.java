@@ -92,9 +92,9 @@ public class CatalogController {
                 return productService.getPageCat(page-1,size, categoryIds );
 
     }
-    @GetMapping("/test")
-    public  FilterConfig test() {
-        return serviceFilter.get();
+    @GetMapping("/test/{id}")
+    public  ObjectNode test(@PathVariable("id") String id) {
+        return serviceFilter.get(id);
 
     }
 }

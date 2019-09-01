@@ -16,6 +16,7 @@ public class FilterConfig {
     private Map<Integer, FilterGroup> groups;
 
     public void merge(ObjectNode node) {
+        int idcat = node.get("categoryId").intValue();
         node.get("groups").forEach(g -> {
             if (g.isObject()) {
                 ObjectNode gn = (ObjectNode) g;
@@ -24,7 +25,7 @@ public class FilterConfig {
                         optNode(gn, "attributes", JsonNode::isArray).ifPresent(attributes -> {
                             if (groups == null) groups = new HashMap<>();
 
-                            FilterGroup group = groups.getOrDefault(id, new FilterGroup(id, name));
+                            FilterGroup group = groups.getOrDefault(idcat, new FilterGroup(id, name));
                             attributes.forEach(attribute -> {
                                 if (attribute.isObject()) {
                                    group.merge((ObjectNode) attribute);
@@ -32,7 +33,7 @@ public class FilterConfig {
                                 }
                             });
 
-                            groups.put(id, group);
+                            groups.put(idcat, group);
 
 
                         });

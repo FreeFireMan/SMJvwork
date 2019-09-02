@@ -102,7 +102,7 @@ public class CatalogController {
 
     }
     @PostMapping("/test")
-    public ObjectNode test(@RequestBody ObjectNode node){
-        return serviceFilter.test(node);
+    public Iterator<ObjectNode> test(@RequestBody ObjectNode node){
+        return productService.getFilterPage(node);
     }
 }

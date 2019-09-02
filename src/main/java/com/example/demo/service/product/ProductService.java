@@ -76,5 +76,15 @@ public class ProductService {
         Page<ObjectNode> resultPage = new PageImpl<ObjectNode>(list, pageable, count);
         return resultPage;
     }
+    public  Iterator<ObjectNode> getFilterPage(ObjectNode node){
+        Integer categoryIds = node.get("category").asInt();
+        System.out.println(categoryIds);
+        Iterator<ObjectNode> prods = mongoTemplate.stream(
+                Query.query(Criteria.where("categoryId").is(categoryIds)),
+                ObjectNode.class,
+                COLL_PRODUCTS_LONG);
+
+        return prods;
+    }
 
 }

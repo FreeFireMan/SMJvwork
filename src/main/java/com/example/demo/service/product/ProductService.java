@@ -13,10 +13,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 import static com.example.demo.db.CollectionsConfig.*;
 
@@ -76,15 +73,27 @@ public class ProductService {
         Page<ObjectNode> resultPage = new PageImpl<ObjectNode>(list, pageable, count);
         return resultPage;
     }
-    public  Iterator<ObjectNode> getFilterPage(ObjectNode node){
+    public  List<ObjectNode> getFilterPage(ObjectNode node){
         Integer categoryIds = node.get("category").asInt();
-        System.out.println(categoryIds);
+        Set<String> setID= new HashSet<>();
+        System.out.println(node);
         Iterator<ObjectNode> prods = mongoTemplate.stream(
                 Query.query(Criteria.where("categoryId").is(categoryIds)),
                 ObjectNode.class,
                 COLL_PRODUCTS_LONG);
+        while (prods.hasNext()){
+            ObjectNode temp = prods.next();
+            setID.add(temp.get("id").asText());
 
-        return prods;
+        }
+        System.out.println(setID.toString());
+        Query query = new Query();
+        query.addCriteria(Criteria.where("id").in(setID));
+        List<ObjectNode> list = mongoTemplate.find(query, ObjectNode.class, COLL_PRODUCTS_SHORT);
+        long count = mongoTemplate.count(query, ObjectNode.class, COLL_PRODUCTS_SHORT);
+        System.out.println(list);
+
+        return list;
     }
 
 }

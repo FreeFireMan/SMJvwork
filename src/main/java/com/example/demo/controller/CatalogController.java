@@ -87,20 +87,20 @@ public class CatalogController {
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-//    @GetMapping("/page")
-//    public Page<ObjectNode> doGetPage(
-//        @RequestParam(value="page") int page,
-//        @RequestParam(value="size") int size,
-//        @RequestParam(value="cat") Set<Integer> categoryIds) {
-//
-//                return productService.getPageCat(page-1,size, categoryIds );
-//
-//    }
-//    @GetMapping("/filter/{id}")
-//    public  ObjectNode getFilter(@PathVariable("id") String id) {
-//        return serviceFilter.get(id);
-//
-//    }
+    @GetMapping("/page")
+    public Page<ObjectNode> doGetPage(
+        @RequestParam(value="page") int page,
+        @RequestParam(value="size") int size,
+        @RequestParam(value="cat") Set<Integer> categoryIds) {
+
+                return productService.getPageCat(page-1,size, categoryIds );
+
+    }
+    @GetMapping("/filter/{id}")
+    public  ObjectNode getFilter(@PathVariable("id") String id) {
+        return serviceFilter.get(id);
+
+    }
 
     // TODO: add sorting
     @PostMapping("/categories/{id}/products/full")
@@ -113,14 +113,24 @@ public class CatalogController {
         return productService.findLongDescriptions(page, size, categoryId, json, Optional.empty());
     }
 
-    // TODO: add sorting
+   /* // TODO: add sorting
     @PostMapping("/categories/{id}/products")
     public Iterator<ObjectNode> findShortProductDescriptions(
             @RequestParam(value="page") int page,
             @RequestParam(value="size") int size,
             @PathVariable("id") Integer categoryId,
             @RequestBody ObjectNode json) {
-
+        System.out.println("I work");
         return productService.findShortDescriptions(page, size, categoryId, json, Optional.empty());
+    }*/
+    // TODO: add sorting
+    @PostMapping("/categories/{id}/products")
+    public  Page<ObjectNode> getPagefindShortDescriptions(
+            @RequestParam(value="page") int page,
+            @RequestParam(value="size") int size,
+            @PathVariable("id") Integer categoryId,
+            @RequestBody ObjectNode json) {
+        System.out.println("I work");
+        return productService.getPagefindShortDescriptions(page, size, categoryId, json, Optional.empty());
     }
 }

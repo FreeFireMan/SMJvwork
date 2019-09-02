@@ -65,8 +65,8 @@ public class ProductService {
         final Query query = new Query();
 
         // maintain pagination
-        final Pageable pageableRequest = PageRequest.of(page, size);
-        query.with(pageableRequest);
+       /* final Pageable pageableRequest = PageRequest.of(page, size);
+        query.with(pageableRequest);*/
 
         // add a product category
         query.addCriteria(Criteria.where("categoryId").is(categoryId));
@@ -136,6 +136,7 @@ public class ProductService {
                                                          ObjectNode json,
                                                          Optional<Sort> sort) {
         List<ObjectNode> ids = findLongDescriptionIds(page, size, categoryId, json, sort);
+        System.out.println("ids"+ids);
 
         Set<String> idSet = new HashSet<>();
         for (ObjectNode n: ids
@@ -143,7 +144,6 @@ public class ProductService {
             idSet.add(n.get("id").asText());
         }
 
-        System.out.println("ids"+ids);
         List<ObjectNode> list = mongoTemplate.find(Query.query(Criteria.where("id").in(idSet)),ObjectNode.class,COLL_PRODUCTS_SHORT);
         long count = idSet.size();
         System.out.println("list"+list.toString());

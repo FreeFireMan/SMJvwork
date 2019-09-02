@@ -87,22 +87,40 @@ public class CatalogController {
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @GetMapping("/page")
-    public Page<ObjectNode> doGetPage(@RequestParam(value="page") int page,@RequestParam(value="size") int size,
-                                      @RequestParam(value="cat") Set<Integer> categoryIds
+//    @GetMapping("/page")
+//    public Page<ObjectNode> doGetPage(
+//        @RequestParam(value="page") int page,
+//        @RequestParam(value="size") int size,
+//        @RequestParam(value="cat") Set<Integer> categoryIds) {
+//
+//                return productService.getPageCat(page-1,size, categoryIds );
+//
+//    }
+//    @GetMapping("/filter/{id}")
+//    public  ObjectNode getFilter(@PathVariable("id") String id) {
+//        return serviceFilter.get(id);
+//
+//    }
 
-    ) {
+    // TODO: add sorting
+    @PostMapping("/categories/{id}/products/full")
+    public Iterator<ObjectNode> findFullProductDescriptions(
+            @RequestParam(value="page") int page,
+            @RequestParam(value="size") int size,
+            @PathVariable("id") Integer categoryId,
+            @RequestBody ObjectNode json) {
 
-                return productService.getPageCat(page-1,size, categoryIds );
-
+        return productService.findLongDescriptions(page, size, categoryId, json, Optional.empty());
     }
-    @GetMapping("/filter/{id}")
-    public  ObjectNode getFilter(@PathVariable("id") String id) {
-        return serviceFilter.get(id);
 
-    }
-    @PostMapping("/test/{id}")
-    public List<ObjectNode> test(@RequestBody ObjectNode node,@PathVariable("id") Integer categoryId){
-        return productService.getFilterPage(node,categoryId);
+    // TODO: add sorting
+    @PostMapping("/categories/{id}/products")
+    public Iterator<ObjectNode> findShortProductDescriptions(
+            @RequestParam(value="page") int page,
+            @RequestParam(value="size") int size,
+            @PathVariable("id") Integer categoryId,
+            @RequestBody ObjectNode json) {
+
+        return productService.findShortDescriptions(page, size, categoryId, json, Optional.empty());
     }
 }

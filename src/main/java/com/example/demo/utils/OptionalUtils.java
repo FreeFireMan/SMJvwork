@@ -2,6 +2,8 @@ package com.example.demo.utils;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import java.util.ArrayDeque;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Optional;
 import java.util.function.Function;
@@ -25,6 +27,16 @@ public class OptionalUtils {
 
     public static Optional<String> optStr(JsonNode n, String field) {
         return optVal(n, field, JsonNode::isTextual, JsonNode::asText);
+    }
+
+    public static Optional<Collection<String>> optStrArr(JsonNode n, String field) {
+        return optVal(n, field, JsonNode::isArray, node -> {
+            ArrayDeque<String> values = new ArrayDeque<>();
+            node.elements().forEachRemaining(v -> {
+                if (v.isTextual()) values.add(v.asText());
+            });
+            return values;
+        });
     }
 
     public static Optional<JsonNode> optNode(JsonNode n, String field) {

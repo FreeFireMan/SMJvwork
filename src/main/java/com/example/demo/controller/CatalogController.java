@@ -101,8 +101,8 @@ public class CatalogController {
         return serviceFilter.get(id);
 
     }
-    @PostMapping("/test")
-    public List<ObjectNode> test(@RequestBody ObjectNode node){
-        return productService.getFilterPage(node);
+    @PostMapping("/test/{id}")
+    public List<ObjectNode> test(@RequestBody ObjectNode node,@PathVariable("id") Integer categoryId){
+        return productService.getFilterPage(node,categoryId);
     }
 }

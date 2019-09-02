@@ -1,19 +1,18 @@
 package com.example.demo.service.product;
 
-import com.example.demo.db.model.Filter;
-import com.example.demo.db.model.ModelHolder;
-import com.example.demo.db.model.ShortProductHolder;
-import com.example.demo.db.model.ShortProductNode;
-import com.example.demo.utils.OptionalUtils;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.util.CloseableIterator;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.IntStream;
 
 import static com.example.demo.db.CollectionsConfig.*;
 
@@ -73,27 +72,40 @@ public class ProductService {
         Page<ObjectNode> resultPage = new PageImpl<ObjectNode>(list, pageable, count);
         return resultPage;
     }
-    public  List<ObjectNode> getFilterPage(ObjectNode node){
-        Integer categoryIds = node.get("category").asInt();
+    public  List<ObjectNode> getFilterPage(ObjectNode node,Integer categoryId){
         Set<String> setID= new HashSet<>();
-        System.out.println(node);
+        List<ObjectNode> items = new ArrayList<>();
+        System.out.println("Input data : "+node);
         Iterator<ObjectNode> prods = mongoTemplate.stream(
-                Query.query(Criteria.where("categoryId").is(categoryIds)),
+                Query.query(Criteria.where("categoryId").is(categoryId)),
                 ObjectNode.class,
                 COLL_PRODUCTS_LONG);
         while (prods.hasNext()){
-            ObjectNode temp = prods.next();
-            setID.add(temp.get("id").asText());
-
+            items.add(prods.next());
         }
+        items.forEach(nodes -> {
+            nodes.get("groups").forEach(g->{
+                g.get("attributes").forEach(attr->{
+                    System.out.println(attr.get("name"));
+                    if(node.get(attr.get("name").asText()) != null)
+                    attr.get("values").forEach(val->{
+                        if (val.get("value").asText() == node.get(attr.get("name").asText()).asText(){
+                            setID.add()
+                        }
+                    });
+                });
+            });
+        });
+
+
         System.out.println(setID.toString());
         Query query = new Query();
         query.addCriteria(Criteria.where("id").in(setID));
         List<ObjectNode> list = mongoTemplate.find(query, ObjectNode.class, COLL_PRODUCTS_SHORT);
         long count = mongoTemplate.count(query, ObjectNode.class, COLL_PRODUCTS_SHORT);
-        System.out.println(list);
+        System.out.println("Output data : "+list);
 
-        return list;
+        return items;
     }
 
 }

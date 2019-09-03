@@ -17,6 +17,7 @@ import org.springframework.data.mongodb.core.BulkOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -33,6 +34,10 @@ import java.util.Optional;
 @Slf4j
 @Service
 public class CatalogService {
+    @Scheduled(cron = "0 0 0 * * *")
+    public void ScheduleddoFetchAndUpdate(){
+        this.fetchAndUpdate();
+    }
 
     @Autowired
     private MongoTemplate mongoTemplate;

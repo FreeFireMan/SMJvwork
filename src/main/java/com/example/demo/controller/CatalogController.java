@@ -25,11 +25,6 @@ import java.util.*;
 @RequestMapping("api")
 public class CatalogController {
 
-    // TODO: this should be done rather at CatalogService level
-//    @Scheduled(cron = "0 0 0 * * *")
-//    public void ScheduleddoFetchAndUpdate(){
-//        this.doFetchAndUpdate();
-//    }
 
     @Autowired
     CatalogService catalogService;
@@ -104,6 +99,7 @@ public class CatalogController {
             pageable.getSort());
     }
 
+
     @RequestMapping(
         method = RequestMethod.POST,
         consumes = { MediaType.APPLICATION_JSON_VALUE },
@@ -120,6 +116,7 @@ public class CatalogController {
             categoryId,
             json,
             pageable.getSort());
+        System.out.println("json: "+json);
 
         if (pageable.getPageNumber() > results.getTotalPages()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -129,4 +126,16 @@ public class CatalogController {
                 HttpStatus.OK);
         }
     }
+    @GetMapping("/page")
+    public Page<ObjectNode> doGetPage(
+            @RequestParam(value="page") int page,
+            @RequestParam(value="size") int size,
+            @RequestParam(value="cat") Set<Integer> categoryIds) {
+
+        return productService.getPageCat(page-1,size, categoryIds );
+
+    }
+    @GetMapping("/filter/{id}")
+    public  ObjectNode getFilter(@PathVariable("id") String id) {
+        return serviceFilter.get(id);}
 }

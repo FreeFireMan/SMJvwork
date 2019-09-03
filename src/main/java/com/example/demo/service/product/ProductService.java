@@ -177,6 +177,7 @@ public class ProductService {
 
         Query paginatedQuery = buildLongProductQuery(categoryId, json, sort);
         Query query = addPagination(page, size, paginatedQuery);
+        System.out.println(query);
         paginatedQuery.fields().include("id").exclude("_id");
 
         long count = mongoTemplate.count(query, BSON.class, COLL_PRODUCTS_LONG);
@@ -191,20 +192,20 @@ public class ProductService {
         return new PageImpl<>(result, PageRequest.of(page, size), count);
     }
 
-//    public Page<ObjectNode> getPageCat(int page, int size, Set<Integer> categoryIds) {
-//
-//        Pageable pageable = PageRequest.of(page, size);
-//        Query query = new Query().with(pageable);
-//        query.with(pageable);
-//        if (categoryIds.size()>0) {
-//            query.addCriteria(Criteria.where("categoryId").in(categoryIds));
-//        }
-//        query.with(new Sort(Sort.Direction.DESC, "lastUpdated"));
-//        List<ObjectNode> list = mongoTemplate.find(query, ObjectNode.class, COLL_PRODUCTS_SHORT);
-//        long count = mongoTemplate.count(query, ObjectNode.class, COLL_PRODUCTS_SHORT);
-//
-//        Page<ObjectNode> resultPage = new PageImpl<ObjectNode>(list, pageable, count);
-//        return resultPage;
-//    }
+    public Page<ObjectNode> getPageCat(int page, int size, Set<Integer> categoryIds) {
+
+        Pageable pageable = PageRequest.of(page, size);
+        Query query = new Query().with(pageable);
+        query.with(pageable);
+        if (categoryIds.size()>0) {
+            query.addCriteria(Criteria.where("categoryId").in(categoryIds));
+        }
+        query.with(new Sort(Sort.Direction.DESC, "lastUpdated"));
+        List<ObjectNode> list = mongoTemplate.find(query, ObjectNode.class, COLL_PRODUCTS_SHORT);
+        long count = mongoTemplate.count(query, ObjectNode.class, COLL_PRODUCTS_SHORT);
+
+       Page<ObjectNode> resultPage = new PageImpl<ObjectNode>(list, pageable, count);
+       return resultPage;
+    }
 
 }

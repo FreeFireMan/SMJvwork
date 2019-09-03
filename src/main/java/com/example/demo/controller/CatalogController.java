@@ -1,24 +1,22 @@
 package com.example.demo.controller;
 
 
-import com.example.demo.db.model.filterConfig.FilterConfig;
+import com.example.demo.rest.PagedResponse;
 import com.example.demo.service.catalog.CatalogService;
 import com.example.demo.service.category.CategoryService;
 import com.example.demo.service.filter.ServiceFilter;
 import com.example.demo.service.product.ProductService;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedResources;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-
-import org.springframework.data.domain.*;
 
 import java.util.*;
 
@@ -27,10 +25,11 @@ import java.util.*;
 @RequestMapping("api")
 public class CatalogController {
 
-    @Scheduled(cron = "0 0 0 * * *")
-    public void ScheduleddoFetchAndUpdate(){
-        this.doFetchAndUpdate();
-    }
+    // TODO: this should be done rather at CatalogService level
+//    @Scheduled(cron = "0 0 0 * * *")
+//    public void ScheduleddoFetchAndUpdate(){
+//        this.doFetchAndUpdate();
+//    }
 
     @Autowired
     CatalogService catalogService;
@@ -40,8 +39,12 @@ public class CatalogController {
 
     @Autowired
     ProductService productService;
+
     @Autowired
     ServiceFilter serviceFilter;
+
+    @Autowired
+    PagedResourcesAssembler pagedAssembler;
 
     @PostMapping("/catalog/renew")
     public void doFetchAndUpdate() {
@@ -83,54 +86,47 @@ public class CatalogController {
     @GetMapping("/products/{id}/full")
     public ResponseEntity<ObjectNode>  doGetProductLong(@PathVariable("id") String id) {
         return productService.findLongById(id)
-                .map(n -> new ResponseEntity<>(n, HttpStatus.OK))
-                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+            .map(n -> new ResponseEntity<>(n, HttpStatus.OK))
+            .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @GetMapping("/page")
-    public Page<ObjectNode> doGetPage(
-        @RequestParam(value="page") int page,
-        @RequestParam(value="size") int size,
-        @RequestParam(value="cat") Set<Integer> categoryIds) {
-
-                return productService.getPageCat(page-1,size, categoryIds );
-
-    }
-    @GetMapping("/filter/{id}")
-    public  ObjectNode getFilter(@PathVariable("id") String id) {
-        return serviceFilter.get(id);
-
-    }
-
-    // TODO: add sorting
     @PostMapping("/categories/{id}/products/full")
-    public Iterator<ObjectNode> findFullProductDescriptions(
-            @RequestParam(value="page") int page,
-            @RequestParam(value="size") int size,
-            @PathVariable("id") Integer categoryId,
-            @RequestBody ObjectNode json) {
+    public Page<ObjectNode> doFindFullProductDescriptions(
+        @PathVariable("id") Integer categoryId,
+        @RequestBody ObjectNode json,
+        Pageable pageable) {
 
-        return productService.findLongDescriptions(page, size, categoryId, json, Optional.empty());
+        return productService.findLongDescriptions(
+            pageable.getPageNumber(),
+            pageable.getPageSize(),
+            categoryId,
+            json,
+            pageable.getSort());
     }
 
-   /* // TODO: add sorting
-    @PostMapping("/categories/{id}/products")
-    public Iterator<ObjectNode> findShortProductDescriptions(
-            @RequestParam(value="page") int page,
-            @RequestParam(value="size") int size,
-            @PathVariable("id") Integer categoryId,
-            @RequestBody ObjectNode json) {
-        System.out.println("I work");
-        return productService.findShortDescriptions(page, size, categoryId, json, Optional.empty());
-    }*/
-    // TODO: add sorting
-    @PostMapping("/categories/{id}/products")
-    public  Page<ObjectNode> getPagefindShortDescriptions(
-            @RequestParam(value="page") int page,
-            @RequestParam(value="size") int size,
-            @PathVariable("id") Integer categoryId,
-            @RequestBody ObjectNode json) {
-        System.out.println("page"+page+" size "+size);
-        return productService.getPagefindShortDescriptions(page, size, categoryId, json, Optional.empty());
+    @RequestMapping(
+        method = RequestMethod.POST,
+        consumes = { MediaType.APPLICATION_JSON_VALUE },
+        produces = MediaType.APPLICATION_JSON_VALUE,
+        value = "/categories/{id}/products")
+    public ResponseEntity<PagedResponse<ObjectNode>> doFindShortProductDescriptions(
+        @PathVariable("id") Integer categoryId,
+        @RequestBody ObjectNode json,
+        Pageable pageable) {
+
+        Page<ObjectNode> results = productService.findShortDescriptions(
+            pageable.getPageNumber(),
+            pageable.getPageSize(),
+            categoryId,
+            json,
+            pageable.getSort());
+
+        if (pageable.getPageNumber() > results.getTotalPages()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } else {
+            return new ResponseEntity<>(
+                PagedResponse.from(pagedAssembler.toResource(results)),
+                HttpStatus.OK);
+        }
     }
 }

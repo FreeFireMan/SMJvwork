@@ -1,6 +1,8 @@
 package com.example.demo.service.product;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.bson.BSON;
+import org.bson.BsonDocument;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -10,6 +12,7 @@ import org.springframework.data.util.CloseableIterator;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.example.demo.db.CollectionsConfig.*;
 import static com.example.demo.utils.OptionalUtils.*;
@@ -55,141 +58,153 @@ public class ProductService {
                 COLL_PRODUCTS_SHORT);
     }
 
-    private Query buildLongProductQuery(
+    private Query addPagination(
             int page,
             int size,
-            int categoryId,
-            ObjectNode json,
-            Optional<Sort> sort) {
-
-        final Query query = new Query();
+            Query query) {
 
         // maintain pagination
-       /* final Pageable pageableRequest = PageRequest.of(page, size);
-        query.with(pageableRequest);*/
+        final Pageable pageableRequest = PageRequest.of(page, size);
+        query.with(pageableRequest);
+
+        return query;
+    }
+
+    private Query buildLongProductQuery(
+            int categoryId,
+            ObjectNode json,
+            Sort sort) {
+
+        final Query query = new Query();
 
         // add a product category
         query.addCriteria(Criteria.where("categoryId").is(categoryId));
 
         // maintain filtering
-        if (json != null)
-            json.fieldNames().forEachRemaining(k -> {
+        if (json != null) {
+            Criteria crit = null;
+            Iterator<String> fields = json.fieldNames();
+            while (fields.hasNext()) {
+                String k = fields.next();
                 Optional<Collection<String>> values = optStrArr(json, k);
-                values.ifPresent(v -> {
-                    if (!v.isEmpty()) {
-                        query.addCriteria(
-                                Criteria.where("groups.attributes")
-                                        .elemMatch(
-                                                Criteria.where("name")
-                                                        .is(k)
-                                                        .and("values.value").in(v)
-                                        ));
-                    }
-                });
-            });
+                if (values.isPresent()) {
+                    Collection<String> v = values.get();
+                        if (!v.isEmpty()) {
+                            if (crit == null) crit =
+                                Criteria
+                                    .where("groups.attributes")
+                                    .elemMatch(
+                                        Criteria.where("name")
+                                            .is(k)
+                                            .and("values.value").in(v));
+                            else crit = crit.andOperator(
+                            Criteria
+                                .where("groups.attributes")
+                                .elemMatch(
+                                    Criteria.where("name")
+                                        .is(k)
+                                        .and("values.value").in(v)));
+                        }
+                }
+            };
 
-        sort.ifPresent(query::with);
-
-        return query;
-    }
-
-    /**
-     * Returns the iterator of Long Product descriptions filtered accordingly with specified criterias.
-     *
-     * @param page
-     * @param size
-     * @param categoryId
-     * @param json
-     * @return
-     */
-    public Iterator<ObjectNode> findLongDescriptions(
-            int page,
-            int size,
-            int categoryId,
-            ObjectNode json,
-            Optional<Sort> sort) {
-
-        return mongoTemplate.stream(
-                buildLongProductQuery(page, size, categoryId, json, sort),
-                ObjectNode.class,
-                COLL_PRODUCTS_LONG);
-    }
-
-
-    public Iterator<ObjectNode> findShortDescriptions(
-            int page,
-            int size,
-            int categoryId,
-            ObjectNode json,
-            Optional<Sort> sort) {
-
-        List<ObjectNode> ids = findLongDescriptionIds(page, size, categoryId, json, sort);
-
-        return mongoTemplate.stream(
-                Query.query(Criteria.where("categoryId").in(ids)),
-                ObjectNode.class,
-                COLL_PRODUCTS_SHORT);
-
-    }
-    public Page<ObjectNode> getPagefindShortDescriptions(int page,
-                                                         int size,
-                                                         int categoryId,
-                                                         ObjectNode json,
-                                                         Optional<Sort> sort) {
-        List<ObjectNode> ids = findLongDescriptionIds(page, size, categoryId, json, sort);
-        System.out.println("ids"+ids);
-
-        Set<String> idSet = new HashSet<>();
-        for (ObjectNode n: ids
-             ) {
-            idSet.add(n.get("id").asText());
+            if (crit != null) query.addCriteria(crit);
         }
-
-        List<ObjectNode> list = mongoTemplate.find(Query.query(Criteria.where("id").in(idSet)),ObjectNode.class,COLL_PRODUCTS_SHORT);
-        long count = idSet.size();
-        System.out.println("list"+list.toString());
-        System.out.println("count"+count);
-
-        Pageable pageable = PageRequest.of(page, size);
-
-        Page<ObjectNode> resultPage = new PageImpl<ObjectNode>(list, pageable, count);
-        return resultPage;
+        return query.with(sort);
     }
 
-    public List<ObjectNode> findLongDescriptionIds(
+    private Query buildLongProductQuery(
             int page,
             int size,
             int categoryId,
             ObjectNode json,
-            Optional<Sort> sort) {
+            Sort sort) {
 
-        Query query = buildLongProductQuery(page, size, categoryId, json, sort);
-        System.out.println("findLongDescriptionIds"+query.toString());
-        query.fields().include("id").exclude("_id");
+        return addPagination(page, size, buildLongProductQuery(categoryId, json, sort));
+    }
 
+        /**
+         * Returns the iterator of Long Product descriptions filtered accordingly with specified criterias.
+         *
+         * @param page
+         * @param size
+         * @param categoryId
+         * @param json
+         * @return
+         */
+    public Page<ObjectNode> findLongDescriptions(
+        int page,
+        int size,
+        int categoryId,
+        ObjectNode json,
+        Sort sort) {
 
-        return mongoTemplate.find(
+        Query paginatedQuery = buildLongProductQuery(categoryId, json, sort);
+        Query query = addPagination(page, size, paginatedQuery);
+
+        long count = mongoTemplate.count(query, BSON.class, COLL_PRODUCTS_LONG);
+        List<ObjectNode> list = mongoTemplate.find(
                 query,
                 ObjectNode.class,
                 COLL_PRODUCTS_LONG);
+
+        return new PageImpl<>(list, PageRequest.of(page, size), count);
     }
 
+    public Page<ObjectNode> findShortDescriptions(
+            int page,
+            int size,
+            int categoryId,
+            ObjectNode json,
+            Sort sort) {
 
+        Page<String> ids = findLongDescriptionIds(page, size, categoryId, json, sort);
 
-    public Page<ObjectNode> getPageCat(int page, int size, Set<Integer> categoryIds) {
+        List<ObjectNode> list = mongoTemplate
+                .find(Query.query(Criteria.where("id").in(ids.getContent())),
+                        ObjectNode.class,
+                        COLL_PRODUCTS_SHORT);
 
-        Pageable pageable = PageRequest.of(page, size);
-        Query query = new Query().with(pageable);
-        query.with(pageable);
-        if (categoryIds.size()>0) {
-            query.addCriteria(Criteria.where("categoryId").in(categoryIds));
-        }
-        query.with(new Sort(Sort.Direction.DESC, "lastUpdated"));
-        List<ObjectNode> list = mongoTemplate.find(query, ObjectNode.class, COLL_PRODUCTS_SHORT);
-        long count = mongoTemplate.count(query, ObjectNode.class, COLL_PRODUCTS_SHORT);
-
-        Page<ObjectNode> resultPage = new PageImpl<ObjectNode>(list, pageable, count);
-        return resultPage;
+        return new PageImpl<>(list, PageRequest.of(page, size), ids.getTotalElements());
     }
+
+    public Page<String> findLongDescriptionIds(
+            int page,
+            int size,
+            int categoryId,
+            ObjectNode json,
+            Sort sort) {
+
+        Query paginatedQuery = buildLongProductQuery(categoryId, json, sort);
+        Query query = addPagination(page, size, paginatedQuery);
+        paginatedQuery.fields().include("id").exclude("_id");
+
+        long count = mongoTemplate.count(query, BSON.class, COLL_PRODUCTS_LONG);
+        List<String> result = mongoTemplate.find(
+            paginatedQuery,
+            ObjectNode.class,
+            COLL_PRODUCTS_LONG)
+                .stream()
+                .map(rec -> rec.get("id").asText())
+                .collect(Collectors.toList());
+
+        return new PageImpl<>(result, PageRequest.of(page, size), count);
+    }
+
+//    public Page<ObjectNode> getPageCat(int page, int size, Set<Integer> categoryIds) {
+//
+//        Pageable pageable = PageRequest.of(page, size);
+//        Query query = new Query().with(pageable);
+//        query.with(pageable);
+//        if (categoryIds.size()>0) {
+//            query.addCriteria(Criteria.where("categoryId").in(categoryIds));
+//        }
+//        query.with(new Sort(Sort.Direction.DESC, "lastUpdated"));
+//        List<ObjectNode> list = mongoTemplate.find(query, ObjectNode.class, COLL_PRODUCTS_SHORT);
+//        long count = mongoTemplate.count(query, ObjectNode.class, COLL_PRODUCTS_SHORT);
+//
+//        Page<ObjectNode> resultPage = new PageImpl<ObjectNode>(list, pageable, count);
+//        return resultPage;
+//    }
 
 }

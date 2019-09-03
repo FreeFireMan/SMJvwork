@@ -129,6 +129,7 @@ public class ProductService {
                 Query.query(Criteria.where("categoryId").in(ids)),
                 ObjectNode.class,
                 COLL_PRODUCTS_SHORT);
+
     }
     public Page<ObjectNode> getPagefindShortDescriptions(int page,
                                                          int size,

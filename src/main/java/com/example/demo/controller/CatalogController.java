@@ -130,7 +130,7 @@ public class CatalogController {
             @RequestParam(value="size") int size,
             @PathVariable("id") Integer categoryId,
             @RequestBody ObjectNode json) {
-        System.out.println("I work");
+        System.out.println("page"+page+" size "+size);
         return productService.getPagefindShortDescriptions(page, size, categoryId, json, Optional.empty());
     }
 }

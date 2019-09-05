@@ -78,11 +78,12 @@ public class ProductService {
         final Query query = new Query();
 
         // add a product category
+        if (categoryId>0){
         query.addCriteria(Criteria.where("categoryId").is(categoryId));
-
+        }
         // maintain filtering
         if (json != null) {
-            Criteria crit = null;
+           List<Criteria> criterias = new ArrayList<>();
             Iterator<String> fields = json.fieldNames();
             while (fields.hasNext()) {
                 String k = fields.next();
@@ -90,25 +91,25 @@ public class ProductService {
                 if (values.isPresent()) {
                     Collection<String> v = values.get();
                         if (!v.isEmpty()) {
-                            if (crit == null) crit =
+                            criterias.add(
                                 Criteria
                                     .where("groups.attributes")
                                     .elemMatch(
                                         Criteria.where("name")
                                             .is(k)
-                                            .and("values.value").in(v));
-                            else crit = crit.andOperator(
-                            Criteria
-                                .where("groups.attributes")
-                                .elemMatch(
-                                    Criteria.where("name")
-                                        .is(k)
-                                        .and("values.value").in(v)));
+                                            .and("values.value").in(v)
+                                             ));
                         }
                 }
             };
 
-            if (crit != null) query.addCriteria(crit);
+            if (!criterias.isEmpty()){
+                Criteria crit = criterias.remove(0);
+                if (!criterias.isEmpty())
+                    query.addCriteria(crit.andOperator(criterias.toArray(new Criteria[criterias.size() - 1])));
+                else
+                    query.addCriteria(crit);
+            }
         }
         return query.with(sort);
     }

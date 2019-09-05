@@ -10,7 +10,10 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.PagedResources;
 import org.springframework.http.HttpStatus;
@@ -108,14 +111,19 @@ public class CatalogController {
     public ResponseEntity<PagedResponse<ObjectNode>> doFindShortProductDescriptions(
         @PathVariable("id") Integer categoryId,
         @RequestBody ObjectNode json,
-        Pageable pageable) {
+        @RequestParam(value="page") int page,
+        @RequestParam(value="size") int size
+        ) {
+        Pageable pageable = PageRequest.of(page-1, size);
+
+        System.out.println("pageable: "+pageable);
 
         Page<ObjectNode> results = productService.findShortDescriptions(
             pageable.getPageNumber(),
             pageable.getPageSize(),
-            categoryId,
+                categoryId,
             json,
-            pageable.getSort());
+            Sort.unsorted());
         System.out.println("json: "+json);
 
         if (pageable.getPageNumber() > results.getTotalPages()) {

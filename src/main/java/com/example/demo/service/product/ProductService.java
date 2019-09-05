@@ -103,7 +103,10 @@ public class ProductService {
 
             if (!criterias.isEmpty()) {
                 Criteria crit = criterias.remove(0);
-                query.addCriteria(crit.andOperator(criterias.toArray(new Criteria[criterias.size()])));
+                if (!criterias.isEmpty())
+                    query.addCriteria(crit.andOperator(criterias.toArray(new Criteria[criterias.size() - 1])));
+                else
+                    query.addCriteria(crit);
             }
         }
         return query.with(sort);

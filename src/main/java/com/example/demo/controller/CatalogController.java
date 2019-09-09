@@ -114,7 +114,8 @@ public class CatalogController {
         @RequestParam(value="page") int page,
         @RequestParam(value="size") int size
         ) {
-        Pageable pageable = PageRequest.of(page-1, size);
+        Sort sort = new Sort(Sort.Direction.DESC, "lastUpdated");
+        Pageable pageable = PageRequest.of(page-1, size,sort);
 
         System.out.println("pageable: "+pageable);
 
@@ -122,8 +123,8 @@ public class CatalogController {
             pageable.getPageNumber(),
             pageable.getPageSize(),
                 categoryId,
-            json,
-            Sort.unsorted());
+            json,sort
+                );
         System.out.println("json: "+json);
 
         if (pageable.getPageNumber() > results.getTotalPages()) {
@@ -134,7 +135,7 @@ public class CatalogController {
                 HttpStatus.OK);
         }
     }
-    @GetMapping("/page")
+    /*@GetMapping("/page")
     public Page<ObjectNode> doGetPage(
             @RequestParam(value="page") int page,
             @RequestParam(value="size") int size,
@@ -142,7 +143,7 @@ public class CatalogController {
 
         return productService.getPageCat(page-1,size, categoryIds );
 
-    }
+    }*/
     @GetMapping("/filter/{id}")
     public  ObjectNode getFilter(@PathVariable("id") String id) {
         return serviceFilter.get(id);}

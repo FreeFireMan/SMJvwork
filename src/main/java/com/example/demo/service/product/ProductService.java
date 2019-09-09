@@ -159,14 +159,17 @@ public class ProductService {
             ObjectNode json,
             Sort sort) {
 
-        Page<String> ids = findLongDescriptionIds(page, size, categoryId, json, sort);
 
+        Page<String> ids = findLongDescriptionIds(page, size, categoryId, json, sort);
+        Query query =new  Query();
+                query.addCriteria(Criteria.where("id").in(ids.getContent())).with(sort);
+        System.out.println("query : "+query);
         List<ObjectNode> list = mongoTemplate
-                .find(Query.query(Criteria.where("id").in(ids.getContent())),
+                .find(query,
                         ObjectNode.class,
                         COLL_PRODUCTS_SHORT);
 
-        return new PageImpl<>(list, PageRequest.of(page, size), ids.getTotalElements());
+        return new PageImpl<>(list, PageRequest.of(page, size,sort), ids.getTotalElements());
     }
 
     public Page<String> findLongDescriptionIds(
@@ -176,9 +179,9 @@ public class ProductService {
             ObjectNode json,
             Sort sort) {
 
-        Query paginatedQuery = buildLongProductQuery(categoryId, json, sort);
+        Query paginatedQuery = buildLongProductQuery(categoryId, json, new Sort(Sort.Direction.DESC, "date"));
         Query query = addPagination(page, size, paginatedQuery);
-        System.out.println(query);
+        System.out.println("findLongDescriptionIds : "+query);
         paginatedQuery.fields().include("id").exclude("_id");
 
         long count = mongoTemplate.count(query, BSON.class, COLL_PRODUCTS_LONG);

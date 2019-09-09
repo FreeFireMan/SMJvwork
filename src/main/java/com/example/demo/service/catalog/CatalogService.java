@@ -11,6 +11,7 @@ import com.example.demo.utils.OptionalUtils;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.mongodb.util.JSON;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.BulkOperations;
@@ -83,6 +84,7 @@ public class CatalogService {
             new LongProductHolder (n).setBaseImage(imageStore+imageService.getOriginalName(url,"rez1000/"));
         }
 
+
         mongoTemplate.findAllAndRemove(new Query(), COLL_CATEGORIES);
         if (!categories.isEmpty())
             mongoTemplate.bulkOps(BulkOperations.BulkMode.ORDERED, COLL_CATEGORIES).insert(categories).execute();
@@ -98,9 +100,9 @@ public class CatalogService {
         mongoTemplate.findAllAndRemove(new Query(), COLL_CATALOG);
         catalog.ifPresent(c -> mongoTemplate.save(c.toJson(), COLL_CATALOG));
 
-        // TODO: store `filterConfig`
-
+        System.out.println("findAndRemove");
         mongoTemplate.findAllAndRemove(new Query(),COLL_FILTER);
+        System.out.println("Save");
         mongoTemplate.bulkOps(BulkOperations.BulkMode.ORDERED,COLL_FILTER).insert(filterConfig).execute();
     }
 

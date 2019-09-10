@@ -21,7 +21,7 @@ import java.util.Collections;
 public class ImageService {
 
 
-    private static final String PATH = "C:/upload/";
+    private static final String PATH = "C:/";
     private static final String IMAGE_JPG = ".jpg";
 
     private static RestTemplate makeRestTemplate() {
@@ -40,7 +40,7 @@ public class ImageService {
         MultiValueMap<String, String> parameters =
                 UriComponentsBuilder.fromUriString(url).build().getQueryParams();
 
-        name.append(PATH);
+       name.append(PATH);
         if (subPath.length() > 0){
             name.append(subPath);
 

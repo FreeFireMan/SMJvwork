@@ -21,7 +21,7 @@ import java.util.Collections;
 public class ImageService {
 
 
-    private static final String PATH = "src\\main\\resources\\static\\";
+    private static final String PATH = "C:/upload/";
     private static final String IMAGE_JPG = ".jpg";
 
     private static RestTemplate makeRestTemplate() {

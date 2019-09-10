@@ -24,17 +24,17 @@ import java.util.stream.Collectors;
 public class ContentHouseApi {
 
 
-    private static final String API_USER = "lego";
+/*    private static final String API_USER = "lego";
     private static final String API_PASSWORD = "e7ddaob3";
     private static final String API_HOST = "content-house.pro";
     private static final String API_PATH = "/cs/api/export";
-    private static final String API_SCHEMA = "http";
+    private static final String API_SCHEMA = "http";*/
 
-   /* private static final String API_USER = "tpvrussia";
+    private static final String API_USER = "tpvrussia";
     private static final String API_PASSWORD = "15eXfSp3";
     private static final String API_HOST = "syndicator.tpvrussia.ru";
     private static final String API_PATH = "/api/export";
-    private static final String API_SCHEMA = "http";*/
+    private static final String API_SCHEMA = "http";
 
     private static String uri(String entity, Object id, String subPath) {
         StringBuilder sb = new StringBuilder();

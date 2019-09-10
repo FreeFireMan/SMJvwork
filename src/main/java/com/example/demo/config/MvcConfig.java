@@ -8,10 +8,10 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 @EnableWebMvc
 public class MvcConfig implements WebMvcConfigurer {
-  /*  @Override
+    @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry
-                .addResourceHandler("/static/**")
-                .addResourceLocations("file:///C:/static/");
-    }*/
+                .addResourceHandler("/upload/**")
+                .addResourceLocations("file:///C:/upload/");
+    }
 }

@@ -43,6 +43,8 @@ public class CatalogService {
     private ImageService imageService;
 
     private String imageStore = "http://localhost:8080/";
+    //private String dir = "upload\\lego\\"; //for lego
+    private String dir = "upload\\tpv\\";
 
     public void fetchAndUpdate() {
         final List<ObjectNode> categories = new ArrayList<>();
@@ -50,8 +52,8 @@ public class CatalogService {
         final List<ObjectNode> longProds = new ArrayList<>();
         final FilterConfig filterConfig = new FilterConfig();
 
-        final Optional<CategoryNode> catalog = fetchService.fetchCatalog(70037, n -> {
-      //      final Optional<CategoryNode> catalog = fetchService.fetchCatalog(118, n -> {
+       // final Optional<CategoryNode> catalog = fetchService.fetchCatalog(70037, n -> { //for lego
+            final Optional<CategoryNode> catalog = fetchService.fetchCatalog(118, n -> {
             if (n instanceof CategoryHolder) {
                 categories.add(n.getValue());
             } else if (n instanceof ShortProductHolder) {
@@ -68,18 +70,17 @@ public class CatalogService {
         System.out.println("resize shortProds");
         for (ObjectNode n: shortProds) {
             String url = new ShortProductHolder(n).getbaseImage();
-            String subpath = getPath(url,"rez750\\","productId");
+            String subpath = getPath(url,dir+"rez750\\","productId");
             imageService.saveImageInServer(url,750,750,subpath);
             new ShortProductHolder(n).setBaseImage(imageStore+imageService.getOriginalName(url,subpath));
         }
         System.out.println("resize longProds");
         for (ObjectNode n: longProds) {
             String url = new ShortProductHolder(n).getbaseImage();
-            String subpath = getPath(url,"rez1000\\","productId");
+            String subpath = getPath(url,dir+"rez1000\\","productId");
             imageService.saveImageInServer(url,1000,1000,subpath);
             new LongProductHolder (n).setBaseImage(imageStore+imageService.getOriginalName(url,subpath));
         }
-
 
         mongoTemplate.findAllAndRemove(new Query(), COLL_CATEGORIES);
         if (!categories.isEmpty())

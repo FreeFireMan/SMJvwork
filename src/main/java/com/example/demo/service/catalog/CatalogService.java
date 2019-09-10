@@ -8,29 +8,22 @@ import com.example.demo.db.model.filterConfig.FilterConfig;
 import com.example.demo.service.fetch.FetchService;
 import com.example.demo.service.image.ImageService;
 import com.example.demo.utils.OptionalUtils;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.mongodb.util.JSON;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.BulkOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.util.UriComponentsBuilder;
 
-import static com.example.demo.db.CollectionsConfig.*;
-
-import java.io.DataInput;
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import static com.example.demo.db.CollectionsConfig.*;
 
 @Slf4j
 @Service
@@ -58,6 +51,7 @@ public class CatalogService {
         final FilterConfig filterConfig = new FilterConfig();
 
         final Optional<CategoryNode> catalog = fetchService.fetchCatalog(70037, n -> {
+      //      final Optional<CategoryNode> catalog = fetchService.fetchCatalog(118, n -> {
             if (n instanceof CategoryHolder) {
                 categories.add(n.getValue());
             } else if (n instanceof ShortProductHolder) {
@@ -74,14 +68,16 @@ public class CatalogService {
         System.out.println("resize shortProds");
         for (ObjectNode n: shortProds) {
             String url = new ShortProductHolder(n).getbaseImage();
-            imageService.saveImageInServer(url,750,750,"rez750/");
-            new ShortProductHolder(n).setBaseImage(imageStore+imageService.getOriginalName(url,"rez750/"));
+            String subpath = getPath(url,"rez750\\","productId");
+            imageService.saveImageInServer(url,750,750,subpath);
+            new ShortProductHolder(n).setBaseImage(imageStore+imageService.getOriginalName(url,subpath));
         }
         System.out.println("resize longProds");
         for (ObjectNode n: longProds) {
-            String url = new LongProductHolder (n).getbaseImage();
-            imageService.saveImageInServer(url,1000,1000,"rez1000/");
-            new LongProductHolder (n).setBaseImage(imageStore+imageService.getOriginalName(url,"rez1000/"));
+            String url = new ShortProductHolder(n).getbaseImage();
+            String subpath = getPath(url,"rez1000\\","productId");
+            imageService.saveImageInServer(url,1000,1000,subpath);
+            new LongProductHolder (n).setBaseImage(imageStore+imageService.getOriginalName(url,subpath));
         }
 
 
@@ -101,13 +97,24 @@ public class CatalogService {
         catalog.ifPresent(c -> mongoTemplate.save(c.toJson(), COLL_CATALOG));
 
         System.out.println("findAndRemove");
-        mongoTemplate.findAllAndRemove(new Query(),COLL_FILTER);
+        mongoTemplate.dropCollection(COLL_FILTER);
+       // mongoTemplate.findAndRemove(new Query(),COLL_FILTER); //TODO разобраться почему java.lang.UnsupportedOperationException: Cannot set immutable property java.util.Optional.value!
         System.out.println("Save");
         mongoTemplate.bulkOps(BulkOperations.BulkMode.ORDERED,COLL_FILTER).insert(filterConfig).execute();
+        //mongoTemplate.save(filterConfig,COLL_FILTER);
     }
 
     public Optional<ObjectNode> get() {
         List<ObjectNode> nodes = mongoTemplate.findAll(ObjectNode.class, COLL_CATALOG);
         return OptionalUtils.head(nodes);
+    }
+    public String getPath(String url,String subPath, String getParam){
+        MultiValueMap<String, String> parameters =
+                UriComponentsBuilder.fromUriString(url).build().getQueryParams();
+        StringBuilder name = new StringBuilder();
+        name.append(subPath);
+        name.append(parameters.get(getParam).get(0));
+        name.append("/");
+        return name.toString();
     }
 }

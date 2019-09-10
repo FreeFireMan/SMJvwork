@@ -37,20 +37,24 @@ public class ImageService {
         byte[] image = restTemplate.getForObject(url, byte[].class);
 
         StringBuilder name = new StringBuilder();
+        MultiValueMap<String, String> parameters =
+                UriComponentsBuilder.fromUriString(url).build().getQueryParams();
+
         name.append(PATH);
         if (subPath.length() > 0){
             name.append(subPath);
 
         }
+
         File dir = new File(name.toString());
-        boolean created = dir.mkdir();
+        boolean created = dir.mkdirs();
         if(created){
             System.out.println("Folder has been created");
         }
         name.append(getOriginalName(url,""));
 
 
-
+        System.out.println("name.toString() : "+name.toString()+"." );
         try {
             ImageIO.write(resizeImage(image,scaledWidth,scaledHeight),"jpg",new File(name.toString()+"." ));
         } catch (

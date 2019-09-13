@@ -79,7 +79,9 @@ public class ProductService {
 
         // add a product category
         if (categoryId>0){
-        query.addCriteria(Criteria.where("categoryId").is(categoryId));
+       // query.addCriteria(Criteria.where("breadcrumbs").in(categoryId));
+            query.addCriteria(Criteria.where("breadcrumbs").regex(String.valueOf(categoryId)));
+            System.out.println("breadcrumbs"+query);
         }
         // maintain filtering
         if (json != null) {

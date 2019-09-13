@@ -22,6 +22,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Stack;
 
 import static com.example.demo.db.CollectionsConfig.*;
 
@@ -51,43 +52,41 @@ public class CatalogService {
         final List<ObjectNode> shortProds = new ArrayList<>();
         final List<ObjectNode> longProds = new ArrayList<>();
         final FilterConfig filterConfig = new FilterConfig();
-        StringBuilder test = new StringBuilder();
+        final String[] str = {null};
 
        // final Optional<CategoryNode> catalog = fetchService.fetchCatalog(70037, n -> { //for lego
             final Optional<CategoryNode> catalog = fetchService.fetchCatalog(118, n -> {
             if (n instanceof CategoryHolder) {
-                ObjectNode nodes = n.getValue();
-                /*if (nodes.get("leaf").booleanValue()){
-                    test.delete(0,test.length());
-                }*/
                 categories.add(n.getValue());
-                test.append("/");
-                test.append(nodes.get("id"));
+
             } else if (n instanceof ShortProductHolder) {
-                shortProds.add(n.getValue().put("path",test.toString()));
+                str[0] = ((ShortProductHolder) n).getBreadcrumbs().toString();
+                shortProds.add(n.getValue());
             } else if (n instanceof LongProductHolder) {
-                longProds.add(n.getValue().put("path",test.toString()));
+                longProds.add(n.getValue().put("breadcrumbs", str[0]));
                 filterConfig.merge(n.getValue());
+
             }
+
             });
 
 
 
         // TODO: Image service stuff should rather be done more asynchronously without blocking
-      /*  System.out.println("resize shortProds");
+        System.out.println("resize shortProds");
         for (ObjectNode n: shortProds) {
             String url = new ShortProductHolder(n).getbaseImage();
             String subpath = getPath(url,dir+"rez750\\","productId");
-            imageService.saveImageInServer(url,750,750,subpath);
+           // imageService.saveImageInServer(url,750,750,subpath);
             new ShortProductHolder(n).setBaseImage(imageStore+imageService.getOriginalName(url,subpath));
         }
         System.out.println("resize longProds");
         for (ObjectNode n: longProds) {
             String url = new ShortProductHolder(n).getbaseImage();
             String subpath = getPath(url,dir+"rez1000\\","productId");
-            imageService.saveImageInServer(url,1000,1000,subpath);
+           // imageService.saveImageInServer(url,1000,1000,subpath);
             new LongProductHolder (n).setBaseImage(imageStore+imageService.getOriginalName(url,subpath));
-        }*/
+        }
 
         mongoTemplate.findAllAndRemove(new Query(), COLL_CATEGORIES);
         if (!categories.isEmpty())

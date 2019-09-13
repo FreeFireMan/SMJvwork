@@ -29,6 +29,7 @@ public class ServiceFilter {
     public  ObjectNode  get(String id) {
         ObjectNode jsonNode = mongoTemplate.findOne(new Query(),ObjectNode.class,COLL_FILTER);
         ObjectNode cat = (ObjectNode) jsonNode.get("groups").get(id);
+
         return cat;
     }
 

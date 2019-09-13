@@ -16,6 +16,10 @@ public class ShortProductHolder implements ModelHolder {
     public void  setBaseImage(String url){
         value.put("baseImage",url);
     }
+    public String getBreadcrumbs() { return value.get("breadcrumbs").asText(null); }
+    public void setBreadcrumbs(String x){
+        value.put("breadcrumbs", x);
+    }
 
 
 }

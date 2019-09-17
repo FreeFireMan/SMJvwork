@@ -1,13 +1,13 @@
 package com.example.demo.service.catalog;
 
-import com.example.demo.db.model.CategoryHolder;
-import com.example.demo.db.model.CategoryNode;
-import com.example.demo.db.model.LongProductHolder;
-import com.example.demo.db.model.ShortProductHolder;
+import com.example.demo.db.model.*;
 import com.example.demo.db.model.filterConfig.FilterConfig;
 import com.example.demo.service.fetch.FetchService;
 import com.example.demo.service.image.ImageService;
 import com.example.demo.utils.OptionalUtils;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,10 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Stack;
+import java.util.*;
 
 import static com.example.demo.db.CollectionsConfig.*;
 
@@ -30,7 +27,7 @@ import static com.example.demo.db.CollectionsConfig.*;
 @Service
 public class CatalogService {
     @Scheduled(cron = "0 0 0 * * *")
-    public void ScheduleddoFetchAndUpdate(){
+    public void ScheduleddoFetchAndUpdate() {
         this.fetchAndUpdate();
     }
 
@@ -54,8 +51,8 @@ public class CatalogService {
         final FilterConfig filterConfig = new FilterConfig();
         final String[] str = {null};
 
-       // final Optional<CategoryNode> catalog = fetchService.fetchCatalog(70037, n -> { //for lego
-            final Optional<CategoryNode> catalog = fetchService.fetchCatalog(118, n -> {
+        // final Optional<CategoryNode> catalog = fetchService.fetchCatalog(70037, n -> { //for lego
+        final Optional<CategoryNode> catalog = fetchService.fetchCatalog(118, n -> {
             if (n instanceof CategoryHolder) {
                 categories.add(n.getValue());
 
@@ -68,8 +65,7 @@ public class CatalogService {
 
             }
 
-            });
-
+        });
 
 
         // TODO: Image service stuff should rather be done more asynchronously without blocking
@@ -77,15 +73,25 @@ public class CatalogService {
         for (ObjectNode n: shortProds) {
             String url = new ShortProductHolder(n).getbaseImage();
             String subpath = getPath(url,dir+"rez750\\","productId");
-           // imageService.saveImageInServer(url,750,750,subpath);
+            imageService.saveImageInServer(url,750,750,subpath);
             new ShortProductHolder(n).setBaseImage(imageStore+imageService.getOriginalName(url,subpath));
         }
         System.out.println("resize longProds");
-        for (ObjectNode n: longProds) {
-            String url = new ShortProductHolder(n).getbaseImage();
-            String subpath = getPath(url,dir+"rez1000\\","productId");
-           // imageService.saveImageInServer(url,1000,1000,subpath);
-            new LongProductHolder (n).setBaseImage(imageStore+imageService.getOriginalName(url,subpath));
+        for (ObjectNode n : longProds) {
+            String url = new LongProductHolder(n).getbaseImage();
+            String subpath = getPath(url, dir + "rez1000\\", "productId");
+
+            ArrayNode imageNode = new LongProductHolder(n).geImages();
+
+            imageNode.forEach(im -> {
+                String urlIm = new ImageHolder((ObjectNode) im).getImagePath();
+
+                imageService.saveImageInServer(urlIm, 1000, 1000, subpath);
+                new ImageHolder((ObjectNode) im).setThumbs(imageStore + imageService.getOriginalName(urlIm, subpath));
+            });
+            imageService.saveImageInServer(url, 1000, 1000, subpath);
+            new LongProductHolder(n).setBaseImage(imageStore + imageService.getOriginalName(url, subpath));
+            new LongProductHolder(n).setImages(imageNode);
         }
 
         mongoTemplate.findAllAndRemove(new Query(), COLL_CATEGORIES);
@@ -105,9 +111,9 @@ public class CatalogService {
 
         System.out.println("findAndRemove");
         mongoTemplate.dropCollection(COLL_FILTER);
-       // mongoTemplate.findAndRemove(new Query(),COLL_FILTER); //TODO разобраться почему java.lang.UnsupportedOperationException: Cannot set immutable property java.util.Optional.value!
+        // mongoTemplate.findAndRemove(new Query(),COLL_FILTER); //TODO разобраться почему java.lang.UnsupportedOperationException: Cannot set immutable property java.util.Optional.value!
         System.out.println("Save");
-        mongoTemplate.bulkOps(BulkOperations.BulkMode.ORDERED,COLL_FILTER).insert(filterConfig).execute();
+        mongoTemplate.bulkOps(BulkOperations.BulkMode.ORDERED, COLL_FILTER).insert(filterConfig).execute();
         //mongoTemplate.save(filterConfig,COLL_FILTER);
     }
 
@@ -115,7 +121,8 @@ public class CatalogService {
         List<ObjectNode> nodes = mongoTemplate.findAll(ObjectNode.class, COLL_CATALOG);
         return OptionalUtils.head(nodes);
     }
-    public String getPath(String url,String subPath, String getParam){
+
+    public String getPath(String url, String subPath, String getParam) {
         MultiValueMap<String, String> parameters =
                 UriComponentsBuilder.fromUriString(url).build().getQueryParams();
         StringBuilder name = new StringBuilder();

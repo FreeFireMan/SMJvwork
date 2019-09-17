@@ -59,13 +59,21 @@ public class ImageService {
         }
         nameSaveLocation.append(getOriginalName(url,""));
 
-       // System.out.println("nameSaveLocation.toString() : "+nameSaveLocation.toString() );
-        try {
-            ImageIO.write(resize(image, scaledWidth, scaledHeight), parameters.get("extension").get(0), new File(nameSaveLocation.toString()));
-        } catch (
-                IOException e) {
-            e.printStackTrace();
-        }
+       if(scaledWidth> 0) {
+           try {
+               ImageIO.write(resize(image, scaledWidth, scaledHeight), parameters.get("extension").get(0), new File(nameSaveLocation.toString()));
+           } catch (
+                   IOException e) {
+               e.printStackTrace();
+           }
+       }else{
+           try {
+               ImageIO.write(image,  parameters.get("extension").get(0), new File(nameSaveLocation.toString()));
+           } catch (
+                   IOException e) {
+               e.printStackTrace();
+           }
+       }
     }
 
     public String getOriginalName(String url,String subPath)

@@ -17,4 +17,5 @@ public class ShortProductNode {
     public ObjectNode toJson() {
         return value.getValue();
     }
+
 }

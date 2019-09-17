@@ -17,7 +17,7 @@ public class ShortProductHolder implements ModelHolder {
         value.put("baseImage",url);
     }
     public void setBaseImageThumbs(String url){
-        value.put("BaseImageThumbs",url);
+        value.put("baseImageThumbs",url);
     }
     public String getBreadcrumbs() { return value.get("breadcrumbs").asText(null); }
     public void setBreadcrumbs(String x){

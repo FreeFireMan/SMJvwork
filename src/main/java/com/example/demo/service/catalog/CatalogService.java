@@ -5,9 +5,7 @@ import com.example.demo.db.model.filterConfig.FilterConfig;
 import com.example.demo.service.fetch.FetchService;
 import com.example.demo.service.image.ImageService;
 import com.example.demo.utils.OptionalUtils;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +17,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 import static com.example.demo.db.CollectionsConfig.*;
 
@@ -41,8 +41,8 @@ public class CatalogService {
     private ImageService imageService;
 
     private String imageStore = "http://localhost:8080/";
-    //private String dir = "upload\\lego\\"; //for lego
-    private String dir = "upload\\tpv\\";
+    //private String dir = "upload//lego//"; //for lego
+    private String dir = "upload/tpv/";
 
     public void fetchAndUpdate() {
         final List<ObjectNode> categories = new ArrayList<>();
@@ -70,16 +70,20 @@ public class CatalogService {
 
         // TODO: Image service stuff should rather be done more asynchronously without blocking
         System.out.println("resize shortProds");
-        for (ObjectNode n: shortProds) {
+        for (ObjectNode n : shortProds) {
             String url = new ShortProductHolder(n).getbaseImage();
-            String subpath = getPath(url,dir+"rez750\\","productId");
-            imageService.saveImageInServer(url,750,750,subpath);
-            new ShortProductHolder(n).setBaseImage(imageStore+imageService.getOriginalName(url,subpath));
+            String subpath = getPath(url, dir + "rez750/", "productId");
+            String subPathOriginal = getPath(url, dir + "original/", "productId");
+            imageService.saveImageInServer(url, 750, 750, subpath);
+            imageService.saveImageInServer(url, 0, 0, subPathOriginal);
+            new ShortProductHolder(n).setBaseImage(imageStore + imageService.getOriginalName(url, subPathOriginal));
+            new ShortProductHolder(n).setBaseImageThumbs(imageStore + imageService.getOriginalName(url, subpath));
         }
         System.out.println("resize longProds");
         for (ObjectNode n : longProds) {
             String url = new LongProductHolder(n).getbaseImage();
-            String subpath = getPath(url, dir + "rez1000\\", "productId");
+            String subpath = getPath(url, dir + "rez1000/", "productId");
+            String subPathOriginal = getPath(url, dir + "original/", "productId");
 
             ArrayNode imageNode = new LongProductHolder(n).geImages();
 
@@ -87,10 +91,14 @@ public class CatalogService {
                 String urlIm = new ImageHolder((ObjectNode) im).getImagePath();
 
                 imageService.saveImageInServer(urlIm, 1000, 1000, subpath);
+                imageService.saveImageInServer(urlIm, 0, 0, subPathOriginal);
+                new ImageHolder((ObjectNode) im).setImage(imageStore + imageService.getOriginalName(urlIm, subPathOriginal));
                 new ImageHolder((ObjectNode) im).setThumbs(imageStore + imageService.getOriginalName(urlIm, subpath));
             });
             imageService.saveImageInServer(url, 1000, 1000, subpath);
+            imageService.saveImageInServer(url, 0, 0, subPathOriginal);
             new LongProductHolder(n).setBaseImage(imageStore + imageService.getOriginalName(url, subpath));
+            new LongProductHolder(n).setBaseImageThumbs(imageStore + imageService.getOriginalName(url, subPathOriginal));
             new LongProductHolder(n).setImages(imageNode);
         }
 

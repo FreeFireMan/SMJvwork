@@ -15,6 +15,6 @@ public class ImageHolder implements ModelHolder  {
         value.put("name",url);
     }
     public void setThumbs(String url){
-        value.put("Thumbs",url);
+        value.put("thumbs",url);
     }
 }

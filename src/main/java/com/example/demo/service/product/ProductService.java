@@ -213,5 +213,8 @@ public class ProductService {
        Page<ObjectNode> resultPage = new PageImpl<ObjectNode>(list, pageable, count);
        return resultPage;
     }
+    public void doSaveImages(){
+
+    }
 
 }

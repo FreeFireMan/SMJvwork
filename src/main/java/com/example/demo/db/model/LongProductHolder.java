@@ -19,6 +19,9 @@ public class LongProductHolder implements ModelHolder {
     }
     public void  setImages(ArrayNode images){
 
-        value.put("images", images);
+        value.set("images", images);
+    }
+    public void setBaseImageThumbs(String url){
+        value.put("baseImageThumbs",url);
     }
 }

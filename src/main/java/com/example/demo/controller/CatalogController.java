@@ -13,15 +13,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.PagedResourcesAssembler;
-import org.springframework.hateoas.PagedResources;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
+import java.util.Iterator;
 
 @Slf4j
 @RestController
@@ -53,6 +51,7 @@ public class CatalogController {
 
     @GetMapping("/catalog")
     public ResponseEntity<ObjectNode> doGetCatalog() {
+
         return catalogService.get()
             .map(n -> new ResponseEntity<>(n, HttpStatus.OK))
             .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
@@ -135,15 +134,14 @@ public class CatalogController {
                 HttpStatus.OK);
         }
     }
-    /*@GetMapping("/page")
-    public Page<ObjectNode> doGetPage(
-            @RequestParam(value="page") int page,
-            @RequestParam(value="size") int size,
-            @RequestParam(value="cat") Set<Integer> categoryIds) {
 
-        return productService.getPageCat(page-1,size, categoryIds );
+    @PostMapping("/images/renew")
+    public void doSaveImages() {
+        if (log.isInfoEnabled()) log.info("save images on fileSystem");
 
-    }*/
+        productService.doSaveImages();
+    }
+
     @GetMapping("/filter/{id}")
     public  ObjectNode getFilter(@PathVariable("id") String id) {
         return serviceFilter.get(id);}

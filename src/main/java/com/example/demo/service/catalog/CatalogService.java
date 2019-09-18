@@ -4,6 +4,7 @@ import com.example.demo.db.model.*;
 import com.example.demo.db.model.filterConfig.FilterConfig;
 import com.example.demo.service.fetch.FetchService;
 import com.example.demo.service.image.ImageService;
+import com.example.demo.service.product.ProductService;
 import com.example.demo.utils.OptionalUtils;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -40,6 +41,9 @@ public class CatalogService {
     @Autowired
     private ImageService imageService;
 
+    @Autowired
+    private ProductService productService;
+
     private String imageStore = "http://localhost:8080/";
     //private String dir = "upload//lego//"; //for lego
     private String dir = "upload/tpv/";
@@ -67,41 +71,6 @@ public class CatalogService {
 
         });
 
-
-        // TODO: Image service stuff should rather be done more asynchronously without blocking
-        System.out.println("resize shortProds");
-        for (ObjectNode n : shortProds) {
-            String url = new ShortProductHolder(n).getbaseImage();
-            String subpath = getPath(url, dir + "rez750/", "productId");
-            String subPathOriginal = getPath(url, dir + "original/", "productId");
-            imageService.saveImageInServer(url, 750, 750, subpath);
-            imageService.saveImageInServer(url, 0, 0, subPathOriginal);
-            new ShortProductHolder(n).setBaseImage(imageStore + imageService.getOriginalName(url, subPathOriginal));
-            new ShortProductHolder(n).setBaseImageThumbs(imageStore + imageService.getOriginalName(url, subpath));
-        }
-        System.out.println("resize longProds");
-        for (ObjectNode n : longProds) {
-            String url = new LongProductHolder(n).getbaseImage();
-            String subpath = getPath(url, dir + "rez1000/", "productId");
-            String subPathOriginal = getPath(url, dir + "original/", "productId");
-
-            ArrayNode imageNode = new LongProductHolder(n).geImages();
-
-            imageNode.forEach(im -> {
-                String urlIm = new ImageHolder((ObjectNode) im).getImagePath();
-
-                imageService.saveImageInServer(urlIm, 1000, 1000, subpath);
-                imageService.saveImageInServer(urlIm, 0, 0, subPathOriginal);
-                new ImageHolder((ObjectNode) im).setImage(imageStore + imageService.getOriginalName(urlIm, subPathOriginal));
-                new ImageHolder((ObjectNode) im).setThumbs(imageStore + imageService.getOriginalName(urlIm, subpath));
-            });
-            imageService.saveImageInServer(url, 1000, 1000, subpath);
-            imageService.saveImageInServer(url, 0, 0, subPathOriginal);
-            new LongProductHolder(n).setBaseImage(imageStore + imageService.getOriginalName(url, subpath));
-            new LongProductHolder(n).setBaseImageThumbs(imageStore + imageService.getOriginalName(url, subPathOriginal));
-            new LongProductHolder(n).setImages(imageNode);
-        }
-
         mongoTemplate.findAllAndRemove(new Query(), COLL_CATEGORIES);
         if (!categories.isEmpty())
             mongoTemplate.bulkOps(BulkOperations.BulkMode.ORDERED, COLL_CATEGORIES).insert(categories).execute();
@@ -123,6 +92,12 @@ public class CatalogService {
         System.out.println("Save");
         mongoTemplate.bulkOps(BulkOperations.BulkMode.ORDERED, COLL_FILTER).insert(filterConfig).execute();
         //mongoTemplate.save(filterConfig,COLL_FILTER);
+
+        productService.doSaveImagesShot();
+        productService.doSaveImagesLong();
+
+
+
     }
 
     public Optional<ObjectNode> get() {
@@ -130,13 +105,4 @@ public class CatalogService {
         return OptionalUtils.head(nodes);
     }
 
-    public String getPath(String url, String subPath, String getParam) {
-        MultiValueMap<String, String> parameters =
-                UriComponentsBuilder.fromUriString(url).build().getQueryParams();
-        StringBuilder name = new StringBuilder();
-        name.append(subPath);
-        name.append(parameters.get(getParam).get(0));
-        name.append("/");
-        return name.toString();
-    }
 }

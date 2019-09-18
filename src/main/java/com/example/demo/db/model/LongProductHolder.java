@@ -14,8 +14,8 @@ public class LongProductHolder implements ModelHolder {
     private ObjectNode value;
     public String getbaseImage(){return value.get("baseImage").asText("no_Image");}
     public ArrayNode geImages(){return (ArrayNode) value.get("images");}
-    public void  setBaseImage(String url){
-        value.put("baseImage",url);
+    public void  setOriginBaseImage(String url){
+        value.put("originBaseImage",url);
     }
     public void  setImages(ArrayNode images){
 

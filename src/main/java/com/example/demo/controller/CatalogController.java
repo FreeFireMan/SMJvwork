@@ -135,11 +135,26 @@ public class CatalogController {
         }
     }
 
-    @PostMapping("/images/renew")
-    public void doSaveImages() {
-        if (log.isInfoEnabled()) log.info("save images on fileSystem");
+    @PostMapping("/images/long/renew")
+    public void doSaveImagesLong() {
+        if (log.isInfoEnabled()) log.info("save long product images on fileSystem");
 
-        productService.doSaveImages();
+        productService.doSaveImagesLong();
+    }
+    @PostMapping("/images/shot/renew")
+    public void doSaveImagesShot() {
+        if (log.isInfoEnabled()) log.info("save shot product images on fileSystem");
+
+        productService.doSaveImagesShot();
+    }
+    @PostMapping("/images/shot/{id}/renew")
+    public void doSaveImagesForId(
+            @PathVariable("id") String categoryId
+    ) {
+
+        if (log.isInfoEnabled()) log.info("save shot product for "+categoryId+" images on fileSystem");
+
+        productService.doSaveImagesForId(categoryId);
     }
 
     @GetMapping("/filter/{id}")

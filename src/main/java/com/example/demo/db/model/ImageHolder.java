@@ -11,8 +11,8 @@ public class ImageHolder implements ModelHolder  {
     public String getImagePath(){return value.get("name").asText("no_Image");}
 
 
-    public void setImage(String url){
-        value.put("name",url);
+    public void setOriginImage(String url){
+        value.put("originImage",url);
     }
     public void setThumbs(String url){
         value.put("thumbs",url);

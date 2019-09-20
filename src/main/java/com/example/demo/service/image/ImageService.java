@@ -7,6 +7,8 @@ import org.springframework.data.mongodb.core.BulkOperations;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.HttpStatusCodeException;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -30,10 +32,19 @@ public class ImageService {
 
      private RestTemplate restTemplate = new RestTemplate();
 
+
     public  void  saveImageInServer(String url, int scaledWidth, int scaledHeight, String subPath){
         byte[] img = null;
+        try {
            img = restTemplate.getForObject(url, byte[].class);
-        System.out.println("Test error");
+        } catch (HttpStatusCodeException exception) {
+            int statusCode = exception.getStatusCode().value();
+            System.out.println("HttpStatusCodeException error : "+statusCode);
+        } catch(RestClientException exception){
+            String getMessage = exception.getMessage();
+            System.out.println("HttpStatusCodeException error : "+getMessage);
+        }
+
          BufferedImage image =null;
         if(img != null) {
             InputStream in = new ByteArrayInputStream(img);
@@ -42,7 +53,7 @@ public class ImageService {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }
+
 
         StringBuilder nameSaveLocation = new StringBuilder();
         MultiValueMap<String, String> parameters =
@@ -75,6 +86,7 @@ public class ImageService {
                e.printStackTrace();
            }
        }
+    }
     }
 
     public String getOriginalName(String url,String subPath)

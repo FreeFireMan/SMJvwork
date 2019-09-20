@@ -13,7 +13,11 @@ public class LongProductHolder implements ModelHolder {
 
     private ObjectNode value;
     public String getbaseImage(){return value.get("baseImage").asText("no_Image");}
-    public ArrayNode geImages(){return (ArrayNode) value.get("images");}
+    public ArrayNode getImages(){return (ArrayNode) value.get("images");}
+    public ArrayNode getInstructions(){return (ArrayNode) value.get("instructions");}
+    public void  setPathForUploadInstruction(String url){
+        value.put("upload",url);
+    }
     public void  setOriginBaseImage(String url){
         value.put("originBaseImage",url);
     }

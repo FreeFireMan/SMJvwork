@@ -10,7 +10,6 @@ public class ImageHolder implements ModelHolder  {
     private ObjectNode value;
     public String getImagePath(){return value.get("name").asText("no_Image");}
 
-
     public void setOriginImage(String url){
         value.put("originImage",url);
     }

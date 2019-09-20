@@ -31,8 +31,9 @@ public class ImageService {
      private RestTemplate restTemplate = new RestTemplate();
 
     public  void  saveImageInServer(String url, int scaledWidth, int scaledHeight, String subPath){
-
-        byte[] img = restTemplate.getForObject(url, byte[].class);
+        byte[] img = null;
+           img = restTemplate.getForObject(url, byte[].class);
+        System.out.println("Test error");
          BufferedImage image =null;
         if(img != null) {
             InputStream in = new ByteArrayInputStream(img);

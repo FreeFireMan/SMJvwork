@@ -47,6 +47,12 @@ public class ProductService {
                 COLL_PRODUCTS_SHORT);
         return Optional.ofNullable(res);
     }
+    public Iterator<ObjectNode> findShortsById(String[] ids) {
+        return mongoTemplate.stream(
+                Query.query(Criteria.where("id").in(ids)),
+                ObjectNode.class,
+                COLL_PRODUCTS_SHORT);
+    }
 
     public Optional<ObjectNode> findLongById(String id) {
         ObjectNode res = mongoTemplate.findOne(
@@ -236,26 +242,8 @@ public class ProductService {
                 ObjectNode.class,
                 COLL_PRODUCTS_LONG);
         list.forEach(n->{
-            String url = new LongProductHolder(n).getbaseImage();
-            //System.out.println("url"+url);
-            String subpath = getPath(url, dir + "rez1000/", "productId");
-            String subPathOriginal = getPath(url, dir + "original/", "productId");
 
-            ArrayNode imageNode = new LongProductHolder(n).geImages();
-
-            imageNode.forEach(im -> {
-                String urlIm = new ImageHolder((ObjectNode) im).getImagePath();
-
-                imageService.saveImageInServer(urlIm, 1000, 1000, subpath);
-                imageService.saveImageInServer(urlIm, 0, 0, subPathOriginal);
-                new ImageHolder((ObjectNode) im).setOriginImage(imageStore + imageService.getOriginalName(urlIm, subPathOriginal));
-                new ImageHolder((ObjectNode) im).setThumbs(imageStore + imageService.getOriginalName(urlIm, subpath));
-            });
-            imageService.saveImageInServer(url, 1000, 1000, subpath);
-            imageService.saveImageInServer(url, 0, 0, subPathOriginal);
-            new LongProductHolder(n).setOriginBaseImage(imageStore + imageService.getOriginalName(url, subPathOriginal));
-            new LongProductHolder(n).setBaseImageThumbs(imageStore + imageService.getOriginalName(url, subpath));
-            new LongProductHolder(n).setImages(imageNode);
+            saveOneLong(n);
         }   );
         mongoTemplate.findAllAndRemove(new Query(), COLL_PRODUCTS_LONG);
         if (!list.isEmpty())
@@ -268,35 +256,23 @@ public class ProductService {
                 ObjectNode.class,
                 COLL_PRODUCTS_SHORT);
         list.forEach(n->{
-            String url = new ShortProductHolder(n).getbaseImage();
-            String subpath = getPath(url, dir + "rez750/", "productId");
-            String subPathOriginal = getPath(url, dir + "original/", "productId");
-             imageService.saveImageInServer(url, 750, 750, subpath);
-             imageService.saveImageInServer(url, 0, 0, subPathOriginal);
-            new ShortProductHolder(n).setOriginBaseImage(imageStore + imageService.getOriginalName(url, subPathOriginal));
-            new ShortProductHolder(n).setBaseImageThumbs(imageStore + imageService.getOriginalName(url, subpath));
+            saveOneShot(n);
         }   );
         mongoTemplate.findAllAndRemove(new Query(), COLL_PRODUCTS_SHORT);
         if (!list.isEmpty())
             mongoTemplate.bulkOps(BulkOperations.BulkMode.ORDERED, COLL_PRODUCTS_SHORT).insert(list).execute();
     }
-    public void doSaveImagesForId(String id){
-        //--------save shot product----------------
-        Query query = new Query();
-        query.addCriteria(Criteria.where("id").is(id));
-        ObjectNode shotP = mongoTemplate.findOne(query, ObjectNode.class, COLL_PRODUCTS_SHORT);
+    public void saveOneShot(ObjectNode shotP){
         String urlShot = new ShortProductHolder(shotP).getbaseImage();
         String subPathShot = getPath(urlShot, dir + "rez750/", "productId");
         String subPathOriginalShot = getPath(urlShot, dir + "original/", "productId");
-         imageService.saveImageInServer(urlShot, 750, 750, subPathShot);
-         imageService.saveImageInServer(urlShot, 0, 0, subPathOriginalShot);
+        imageService.saveImageInServer(urlShot, 750, 750, subPathShot);
+        imageService.saveImageInServer(urlShot, 0, 0, subPathOriginalShot);
         new ShortProductHolder(shotP).setOriginBaseImage(imageStore + imageService.getOriginalName(urlShot, subPathOriginalShot));
         new ShortProductHolder(shotP).setBaseImageThumbs(imageStore + imageService.getOriginalName(urlShot, subPathShot));
-        mongoTemplate.findAndRemove(query,ShortProductHolder.class,COLL_PRODUCTS_SHORT);
-        mongoTemplate.bulkOps(BulkOperations.BulkMode.ORDERED, COLL_PRODUCTS_SHORT).insert(shotP).execute();
 
-        //--------save Long product----------------
-        ObjectNode longP = mongoTemplate.findOne(query, ObjectNode.class, COLL_PRODUCTS_LONG);
+    }
+    public void saveOneLong(ObjectNode longP){
         String urlLong = new LongProductHolder(longP).getbaseImage();
         String subPathLong = getPath(urlLong, dir + "rez1000/", "productId");
         String subPathOriginalLong = getPath(urlLong, dir + "original/", "productId");
@@ -305,16 +281,32 @@ public class ProductService {
         imageNode.forEach(im -> {
             String urlIm = new ImageHolder((ObjectNode) im).getImagePath();
 
-               imageService.saveImageInServer(urlIm, 1000, 1000, subPathLong);
-              imageService.saveImageInServer(urlIm, 0, 0, subPathOriginalLong);
+            imageService.saveImageInServer(urlIm, 1000, 1000, subPathLong);
+            imageService.saveImageInServer(urlIm, 0, 0, subPathOriginalLong);
             new ImageHolder((ObjectNode) im).setOriginImage(imageStore + imageService.getOriginalName(urlIm, subPathOriginalLong));
             new ImageHolder((ObjectNode) im).setThumbs(imageStore + imageService.getOriginalName(urlIm, subPathLong));
         });
-          imageService.saveImageInServer(urlLong, 1000, 1000, subPathLong);
-           imageService.saveImageInServer(urlLong, 0, 0, subPathOriginalLong);
+        imageService.saveImageInServer(urlLong, 1000, 1000, subPathLong);
+        imageService.saveImageInServer(urlLong, 0, 0, subPathOriginalLong);
         new LongProductHolder(longP).setOriginBaseImage(imageStore + imageService.getOriginalName(urlLong, subPathOriginalLong));
         new LongProductHolder(longP).setBaseImageThumbs(imageStore + imageService.getOriginalName(urlLong, subPathLong));
         new LongProductHolder(longP).setImages(imageNode);
+        
+    }
+
+
+    public void doSaveImagesForId(String id){
+        //--------save shot product----------------
+        Query query = new Query();
+        query.addCriteria(Criteria.where("id").is(id));
+        ObjectNode shotP = mongoTemplate.findOne(query, ObjectNode.class, COLL_PRODUCTS_SHORT);
+        saveOneShot(shotP);
+        mongoTemplate.findAndRemove(query,ShortProductHolder.class,COLL_PRODUCTS_SHORT);
+        mongoTemplate.bulkOps(BulkOperations.BulkMode.ORDERED, COLL_PRODUCTS_SHORT).insert(shotP).execute();
+
+        //--------save Long product----------------
+        ObjectNode longP = mongoTemplate.findOne(query, ObjectNode.class, COLL_PRODUCTS_LONG);
+        saveOneLong(longP);
 
         mongoTemplate.findAndRemove(query,LongProductHolder.class,COLL_PRODUCTS_LONG);
         mongoTemplate.bulkOps(BulkOperations.BulkMode.ORDERED, COLL_PRODUCTS_LONG).insert(longP).execute();

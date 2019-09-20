@@ -93,7 +93,7 @@ public class CatalogService {
         mongoTemplate.bulkOps(BulkOperations.BulkMode.ORDERED, COLL_FILTER).insert(filterConfig).execute();
         //mongoTemplate.save(filterConfig,COLL_FILTER);
 
-        productService.doSaveImagesShot();
+       // productService.doSaveImagesShot();
         productService.doSaveImagesLong();
 
 

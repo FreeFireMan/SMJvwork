@@ -335,10 +335,10 @@ public class ProductService {
 
     ///-------------------------- methods for Instructions--------------------------------------------------------------
     public void doSaveInstructionsForId(String id) { //
-        //--------save shot product----------------
+
         Query query = new Query();
         query.addCriteria(Criteria.where("id").is(id));
-        ObjectNode product = mongoTemplate.findOne(query, ObjectNode.class, COLL_PRODUCTS_SHORT);
+        ObjectNode product = mongoTemplate.findOne(query, ObjectNode.class, COLL_PRODUCTS_LONG);
         // method for save doSaveInstructions
         String urlLong = new LongProductHolder(product).getbaseImage();
         String subPath = getPath(urlLong, dir + "instruction/", "productId");
@@ -350,21 +350,32 @@ public class ProductService {
             instructionService.saveInstructionInServer(urlIm,subPath);
 
             new LongProductHolder((ObjectNode) im).setPathForUploadInstruction(uploadStore + imageService.getOriginalName(urlIm, subPath));
+            new LongProductHolder((ObjectNode) im).setNameForUploadInstruction(imageService.getOriginalName(urlIm,""));
         });
-       /* imageService.saveImageInServer(urlLong, 1000, 1000, subPathLong);
-        imageService.saveImageInServer(urlLong, 0, 0, subPathOriginalLong);
-        new LongProductHolder(longP).setOriginBaseImage(uploadStore + imageService.getOriginalName(urlLong, subPathOriginalLong));
-        new LongProductHolder(longP).setBaseImageThumbs(uploadStore + imageService.getOriginalName(urlLong, subPathLong));
-        new LongProductHolder(longP).setImages(imageNode);
-*/
-
-
-
         mongoTemplate.findAndRemove(query, LongProductHolder.class, COLL_PRODUCTS_LONG);
         mongoTemplate.bulkOps(BulkOperations.BulkMode.ORDERED, COLL_PRODUCTS_LONG).insert(product).execute();
 
     }
+    public void doSaveInstructionsForAllLong(){
+        Query query = new Query();
+        List<ObjectNode> list = mongoTemplate.find(
+                query,
+                ObjectNode.class,
+                COLL_PRODUCTS_LONG);
+        list.forEach(n -> {
 
+            doSaveInstructionsForId(n.get("id").asText());
+        });
+        mongoTemplate.findAllAndRemove(new Query(), COLL_PRODUCTS_LONG);
+        if (!list.isEmpty())
+            mongoTemplate.bulkOps(BulkOperations.BulkMode.ORDERED, COLL_PRODUCTS_LONG).insert(list).execute();
+    }
+    ///-------------------------- methods for certificates--------------------------------------------------------------
+    public void doSaveCertificatesForId(String id) { //
+
+
+
+    }
 
 
 }

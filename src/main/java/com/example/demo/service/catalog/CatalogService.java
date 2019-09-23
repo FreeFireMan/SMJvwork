@@ -94,7 +94,7 @@ public class CatalogService {
         //mongoTemplate.save(filterConfig,COLL_FILTER);
 
         productService.doSaveImagesShot();
-        //productService.doSaveImagesLong();
+        productService.doSaveImagesLong();
 
 
 

@@ -18,6 +18,9 @@ public class LongProductHolder implements ModelHolder {
     public void  setPathForUploadInstruction(String url){
         value.put("upload",url);
     }
+    public void  setNameForUploadInstruction(String name){
+        value.put("nameInstruction",name);
+    }
     public void  setOriginBaseImage(String url){
         value.put("originBaseImage",url);
     }

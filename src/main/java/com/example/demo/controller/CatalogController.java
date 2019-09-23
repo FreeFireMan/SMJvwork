@@ -170,4 +170,17 @@ public class CatalogController {
     public ObjectNode getFilter(@PathVariable("id") String id) {
         return serviceFilter.get(id);
     }
+
+
+    @PostMapping("/instruction/save")
+    public void doSaveInstructionsForAllLong() {
+        if (log.isInfoEnabled()) log.info("save instruction");
+       productService.doSaveInstructionsForAllLong();
+    }
+
+    @PostMapping("/instruction/{id}")
+    public void doSaveInstructionsForId(@PathVariable("id") String id) {
+        if (log.isInfoEnabled()) log.info("save instruction for "+id);
+        productService.doSaveInstructionsForId(id);
+    }
 }

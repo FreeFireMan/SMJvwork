@@ -1,8 +1,10 @@
 package com.example.demo.service.product;
 
-import com.example.demo.db.model.*;
+import com.example.demo.db.model.Attribute;
+import com.example.demo.db.model.ImageHolder;
+import com.example.demo.db.model.LongProductHolder;
+import com.example.demo.db.model.ShortProductHolder;
 import com.example.demo.service.image.ImageService;
-import com.example.demo.service.instructionService.InstructionService;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.bson.BSON;
@@ -42,8 +44,6 @@ public class ProductService {
     private MongoTemplate mongoTemplate;
     @Autowired
     private ImageService imageService;
-    @Autowired
-    private InstructionService instructionService;
 
     private RestTemplate restTemplate = new RestTemplate();
 
@@ -284,7 +284,7 @@ public class ProductService {
     public void saveOneShotImages(ObjectNode shotP) {
         String urlShot = new ShortProductHolder(shotP).getbaseImage();
         String subPathShot = getPath(urlShot, dir + "rez750/", "productId");
-        String subPathOriginalShot = getPath(urlShot, dir + "original/", "productId");
+        String subPathOriginalShot = getPath(urlShot, dir + "images/", "productId");
         imageService.saveImageInServer(urlShot, 750, 750, subPathShot);
         imageService.saveImageInServer(urlShot, 0, 0, subPathOriginalShot);
         new ShortProductHolder(shotP).setOriginBaseImage(uploadStore + imageService.getOriginalName(urlShot, subPathOriginalShot));
@@ -295,6 +295,7 @@ public class ProductService {
     public void saveOneLongImages(ObjectNode longP) {
         String urlLong = new LongProductHolder(longP).getbaseImage();
         String subPathLong = getPath(urlLong, dir + "rez1000/", "productId");
+        String subPathOriginalLong = getPath(urlLong, dir + "images/", "productId");
         ArrayNode imageNode = new LongProductHolder(longP).getImages();
 
         imageNode.forEach(im -> {
@@ -304,6 +305,8 @@ public class ProductService {
             new ImageHolder((ObjectNode) im).setThumbs(uploadStore + imageService.getOriginalName(urlIm, subPathLong));
         });
         imageService.saveImageInServer(urlLong, 1000, 1000, subPathLong);
+        imageService.saveImageInServer(urlLong, 0, 0, subPathOriginalLong);
+        new LongProductHolder(longP).setOriginBaseImage(uploadStore + imageService.getOriginalName(urlLong, subPathOriginalLong));
         new LongProductHolder(longP).setBaseImageThumbs(uploadStore + imageService.getOriginalName(urlLong, subPathLong));
         new LongProductHolder(longP).setImages(imageNode);
 
@@ -349,8 +352,9 @@ public class ProductService {
                 ObjectNode.class,
                 COLL_PRODUCTS_LONG);
         String path = dir+field+"/";
-        list.forEach(n -> {
+            list.forEach(n -> {
             ArrayNode arrNode = new LongProductHolder(n).getFieid(field);
+            if (arrNode != null){
             arrNode.forEach(node -> {
                 String url = new Attribute((ObjectNode) node).getFeild("name");
                 byte[] inByte = null;
@@ -394,8 +398,7 @@ public class ProductService {
                 }
                 new Attribute((ObjectNode) node).setFeild(uploadStore+nameSaveLocation.toString(),"upload");
                 new Attribute((ObjectNode) node).setFeild(name,"nameUpload");
-            });
-
+            });}
 
         });
         mongoTemplate.findAllAndRemove(new Query(), COLL_PRODUCTS_LONG);

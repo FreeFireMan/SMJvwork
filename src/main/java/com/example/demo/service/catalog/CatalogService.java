@@ -1,12 +1,14 @@
 package com.example.demo.service.catalog;
 
-import com.example.demo.db.model.*;
+import com.example.demo.db.model.CategoryHolder;
+import com.example.demo.db.model.CategoryNode;
+import com.example.demo.db.model.LongProductHolder;
+import com.example.demo.db.model.ShortProductHolder;
 import com.example.demo.db.model.filterConfig.FilterConfig;
 import com.example.demo.service.fetch.FetchService;
 import com.example.demo.service.image.ImageService;
 import com.example.demo.service.product.ProductService;
 import com.example.demo.utils.OptionalUtils;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,8 +17,6 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -95,6 +95,7 @@ public class CatalogService {
 
         productService.doSaveFilesForLong("instructions");
         productService.doSaveFilesForLong("certificates");
+        productService.doSaveFilesForLong("html_content");
         productService.doSaveFilesForLong("images");
         productService.doSaveImagesShot();
         productService.doSaveImagesLong();

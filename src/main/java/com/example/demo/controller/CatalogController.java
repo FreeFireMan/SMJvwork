@@ -171,9 +171,9 @@ public class CatalogController {
         return serviceFilter.get(id);
     }
 
-    @PostMapping("/savefiles/{feild}")
-    public void doSaveFilesForLong(@PathVariable("feild") String feild) {
-        if (log.isInfoEnabled()) log.info("save doSaveFilesForLong feild : " +feild );
-        productService.doSaveFilesForLong(feild);
+    @PostMapping("/savefiles/{field}")
+    public void doSaveFilesForLong(@PathVariable("field") String field) {
+        if (log.isInfoEnabled()) log.info("save doSaveFilesForLong field : " +field );
+        productService.doSaveFilesForLong(field);
     }
 }

@@ -31,4 +31,8 @@ public class LongProductHolder implements ModelHolder {
     public void setBaseImageThumbs(String url){
         value.put("baseImageThumbs",url);
     }
+
+    public ArrayNode getFieid(String field) {
+        return (ArrayNode) value.get(field);
+    }
 }

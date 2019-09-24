@@ -171,16 +171,9 @@ public class CatalogController {
         return serviceFilter.get(id);
     }
 
-
-    @PostMapping("/instruction/save")
-    public void doSaveInstructionsForAllLong() {
-        if (log.isInfoEnabled()) log.info("save instruction");
-       productService.doSaveInstructionsForAllLong();
-    }
-
-    @PostMapping("/instruction/{id}")
-    public void doSaveInstructionsForId(@PathVariable("id") String id) {
-        if (log.isInfoEnabled()) log.info("save instruction for "+id);
-        productService.doSaveInstructionsForId(id);
+    @PostMapping("/savefiles/{feild}")
+    public void doSaveFilesForLong(@PathVariable("feild") String feild) {
+        if (log.isInfoEnabled()) log.info("save doSaveFilesForLong feild : " +feild );
+        productService.doSaveFilesForLong(feild);
     }
 }

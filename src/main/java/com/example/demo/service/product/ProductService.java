@@ -1,9 +1,6 @@
 package com.example.demo.service.product;
 
-import com.example.demo.db.model.ImageHolder;
-import com.example.demo.db.model.InstructionHolder;
-import com.example.demo.db.model.LongProductHolder;
-import com.example.demo.db.model.ShortProductHolder;
+import com.example.demo.db.model.*;
 import com.example.demo.service.image.ImageService;
 import com.example.demo.service.instructionService.InstructionService;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -17,8 +14,19 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.HttpStatusCodeException;
+import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -37,6 +45,9 @@ public class ProductService {
     @Autowired
     private InstructionService instructionService;
 
+    private RestTemplate restTemplate = new RestTemplate();
+
+    private static final String PATH = "C:/";
     private String uploadStore = "http://localhost:8080/";
     //private String dir = "upload//lego//"; //for lego
     private String dir = "upload/tpv/";
@@ -284,20 +295,15 @@ public class ProductService {
     public void saveOneLongImages(ObjectNode longP) {
         String urlLong = new LongProductHolder(longP).getbaseImage();
         String subPathLong = getPath(urlLong, dir + "rez1000/", "productId");
-        String subPathOriginalLong = getPath(urlLong, dir + "original/", "productId");
         ArrayNode imageNode = new LongProductHolder(longP).getImages();
 
         imageNode.forEach(im -> {
             String urlIm = new ImageHolder((ObjectNode) im).getImagePath();
 
             imageService.saveImageInServer(urlIm, 1000, 1000, subPathLong);
-            imageService.saveImageInServer(urlIm, 0, 0, subPathOriginalLong);
-            new ImageHolder((ObjectNode) im).setOriginImage(uploadStore + imageService.getOriginalName(urlIm, subPathOriginalLong));
             new ImageHolder((ObjectNode) im).setThumbs(uploadStore + imageService.getOriginalName(urlIm, subPathLong));
         });
         imageService.saveImageInServer(urlLong, 1000, 1000, subPathLong);
-        imageService.saveImageInServer(urlLong, 0, 0, subPathOriginalLong);
-        new LongProductHolder(longP).setOriginBaseImage(uploadStore + imageService.getOriginalName(urlLong, subPathOriginalLong));
         new LongProductHolder(longP).setBaseImageThumbs(uploadStore + imageService.getOriginalName(urlLong, subPathLong));
         new LongProductHolder(longP).setImages(imageNode);
 
@@ -333,45 +339,68 @@ public class ProductService {
         return name.toString();
     }
 
-    ///-------------------------- methods for Instructions--------------------------------------------------------------
-    public void doSaveInstructionsForId(String id) { //
 
-        Query query = new Query();
-        query.addCriteria(Criteria.where("id").is(id));
-        ObjectNode product = mongoTemplate.findOne(query, ObjectNode.class, COLL_PRODUCTS_LONG);
-        // method for save doSaveInstructions
-        String urlLong = new LongProductHolder(product).getbaseImage();
-        String subPath = getPath(urlLong, dir + "instruction/", "productId");
-        ArrayNode imageNode = new LongProductHolder(product).getInstructions();
 
-        imageNode.forEach(im -> {
-            String urlIm = new InstructionHolder((ObjectNode) im).getInstructionPath();
 
-            instructionService.saveInstructionInServer(urlIm,subPath);
-
-            new LongProductHolder((ObjectNode) im).setPathForUploadInstruction(uploadStore + imageService.getOriginalName(urlIm, subPath));
-            new LongProductHolder((ObjectNode) im).setNameForUploadInstruction(imageService.getOriginalName(urlIm,""));
-        });
-        mongoTemplate.findAndRemove(query, LongProductHolder.class, COLL_PRODUCTS_LONG);
-        mongoTemplate.bulkOps(BulkOperations.BulkMode.ORDERED, COLL_PRODUCTS_LONG).insert(product).execute();
-
-    }
-    public void doSaveInstructionsForAllLong(){
+    public void doSaveFilesForLong(String field) { //
         Query query = new Query();
         List<ObjectNode> list = mongoTemplate.find(
                 query,
                 ObjectNode.class,
                 COLL_PRODUCTS_LONG);
+        String path = dir+field+"/";
         list.forEach(n -> {
+            ArrayNode arrNode = new LongProductHolder(n).getFieid(field);
+            arrNode.forEach(node -> {
+                String url = new Attribute((ObjectNode) node).getFeild("name");
+                byte[] inByte = null;
+                try {
+                    inByte = restTemplate.getForObject(url,byte[].class);
+                } catch (HttpStatusCodeException exception) {
+                    int statusCode = exception.getStatusCode().value();
+                    System.out.println("HttpStatusCodeException error : "+statusCode);
+                } catch(RestClientException exception){
+                    String getMessage = exception.getMessage();
+                    System.out.println("HttpStatusCodeException error : "+getMessage);
+                }
+                InputStream fileStream = new ByteArrayInputStream(inByte);
+                StringBuilder nameSaveLocation = new StringBuilder();
+                MultiValueMap<String, String> parameters =
+                        UriComponentsBuilder.fromUriString(url).build().getQueryParams();
 
-            doSaveInstructionsForId(n.get("id").asText());
+                nameSaveLocation.append(PATH);
+                if (path.length() > 0){
+                    nameSaveLocation.append(path);
+                }
+                nameSaveLocation.append(parameters.get("productId").get(0));
+                nameSaveLocation.append("/");
+
+
+                File dir = new File(nameSaveLocation.toString());
+                boolean created = dir.mkdirs();
+                if(created){
+                    System.out.println("Folder has been created");
+                }
+                String name = parameters.get("name").get(0);
+                String extension = "."+parameters.get("extension").get(0);
+                nameSaveLocation.append(name).append(extension);
+                Path pat = Paths.get(nameSaveLocation.toString());
+                nameSaveLocation.delete(0,PATH.length());
+
+                try {
+                    Files.copy(fileStream,pat, StandardCopyOption.REPLACE_EXISTING);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                new Attribute((ObjectNode) node).setFeild(uploadStore+nameSaveLocation.toString(),"upload");
+                new Attribute((ObjectNode) node).setFeild(name,"nameUpload");
+            });
+
+
         });
         mongoTemplate.findAllAndRemove(new Query(), COLL_PRODUCTS_LONG);
         if (!list.isEmpty())
             mongoTemplate.bulkOps(BulkOperations.BulkMode.ORDERED, COLL_PRODUCTS_LONG).insert(list).execute();
-    }
-    ///-------------------------- methods for certificates--------------------------------------------------------------
-    public void doSaveCertificatesForId(String id) { //
 
 
 

@@ -27,7 +27,7 @@ import java.util.Collections;
 public class ImageService {
 
 
-    private static final String PATH = "C:/";
+    private static final String PATH = System.getProperty("user.home")+"/";
     private static final String IMAGE_JPG = ".jpg";
 
      private RestTemplate restTemplate = new RestTemplate();

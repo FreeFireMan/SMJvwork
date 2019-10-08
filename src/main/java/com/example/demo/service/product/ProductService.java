@@ -47,7 +47,7 @@ public class ProductService {
 
     private RestTemplate restTemplate = new RestTemplate();
 
-    private static final String PATH = "C:/";
+    private static final String PATH = System.getProperty("user.home")+"/";
     private String uploadStore = "http://localhost:8080/";
     //private String dir = "upload//lego//"; //for lego
     private String dir = "upload/tpv/";

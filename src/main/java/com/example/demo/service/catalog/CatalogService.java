@@ -97,8 +97,8 @@ public class CatalogService {
         productService.doSaveFilesForLong("certificates");
         productService.doSaveFilesForLong("html_content");
         productService.doSaveFilesForLong("images");
-        productService.doSaveImagesShot();
         productService.doSaveImagesLong();
+        productService.doSaveImagesShot();
 
 
 

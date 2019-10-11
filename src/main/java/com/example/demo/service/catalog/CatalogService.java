@@ -54,8 +54,7 @@ public class CatalogService {
         final List<ObjectNode> longProds = new ArrayList<>();
         final FilterConfig filterConfig = new FilterConfig();
         final String[] str = {null};
-        Set<String> duplicates = new HashSet<>();
-        Set<String> uniques = new HashSet<>();
+
 
 
 
@@ -81,43 +80,16 @@ public class CatalogService {
 
         mongoTemplate.findAllAndRemove(new Query(), COLL_PRODUCTS_SHORT);
         if (!shortProds.isEmpty()){
-            for (ObjectNode t : shortProds){
-                if(!uniques.add(t.get("id").asText())) {
-                    duplicates.add(t.get("id").asText());
-                }
-            }
-          /*  duplicates=shortProds.stream()
-               .filter(n->!uniques.add(n.get("id").asText()))
-               .collect(Collectors.toSet());*/
-
-            System.out.println(duplicates.toString());
-            duplicates.forEach(n->{
-                String categoryPath= null;
-                Iterator<ObjectNode> t = shortProds.iterator();
-                while (t.hasNext()) {
-
-                    ObjectNode node = t.next();
-                    String id = node.get("id").asText();
-
-                    if (n.equals(id) && categoryPath != null){
-                        String temp = node.get("breadcrumbs").asText()+categoryPath;
-                        node.put("breadcrumbs",temp);
-                    }
-                    if(n.equals(id) && categoryPath == null){
-                        categoryPath = node.get("breadcrumbs").asText();
-                        t.remove();
-                    }
-                }
-            });
-           
-
-            mongoTemplate.bulkOps(BulkOperations.BulkMode.ORDERED, COLL_PRODUCTS_SHORT).insert(shortProds).execute();
+            List<ObjectNode> shortProdsUniques = checkDuplicate(shortProds);
+            mongoTemplate.bulkOps(BulkOperations.BulkMode.ORDERED, COLL_PRODUCTS_SHORT).insert(shortProdsUniques).execute();
         }
         System.out.println("------------------------------------------------------------------------------------------");
 
         mongoTemplate.findAllAndRemove(new Query(), COLL_PRODUCTS_LONG);
-        if (!longProds.isEmpty())
-            mongoTemplate.bulkOps(BulkOperations.BulkMode.ORDERED, COLL_PRODUCTS_LONG).insert(longProds).execute();
+        if (!longProds.isEmpty()) {
+            List<ObjectNode> longProdsUniques = checkDuplicate(longProds);
+            mongoTemplate.bulkOps(BulkOperations.BulkMode.ORDERED, COLL_PRODUCTS_LONG).insert(longProdsUniques).execute();
+        }
 
         mongoTemplate.findAllAndRemove(new Query(), COLL_CATALOG);
         catalog.ifPresent(c -> mongoTemplate.save(c.toJson(), COLL_CATALOG));
@@ -143,6 +115,44 @@ public class CatalogService {
     public Optional<ObjectNode> get() {
         List<ObjectNode> nodes = mongoTemplate.findAll(ObjectNode.class, COLL_CATALOG);
         return OptionalUtils.head(nodes);
+    }
+    public List<ObjectNode> checkDuplicate(List<ObjectNode> list){
+        Set<String> duplicates = new HashSet<>();
+        Set<String> uniques = new HashSet<>();
+
+        for (ObjectNode t : list){
+            if(!uniques.add(t.get("id").asText())) {
+                duplicates.add(t.get("id").asText());
+            }
+        }
+          /*  duplicates=shortProds.stream()
+               .filter(n->!uniques.add(n.get("id").asText()))
+               .collect(Collectors.toSet());*/
+
+        System.out.println(duplicates.toString());
+        duplicates.forEach(n->{
+            String categoryPath= null;
+            Iterator<ObjectNode> t = list.iterator();
+            while (t.hasNext()) {
+
+                ObjectNode node = t.next();
+                String id = node.get("id").asText();
+
+                if (n.equals(id) && categoryPath != null){
+                    String temp = node.get("breadcrumbs").asText()+categoryPath;
+                    node.put("breadcrumbs",temp);
+                }
+                if(n.equals(id) && categoryPath == null){
+                    categoryPath = node.get("breadcrumbs").asText();
+                    t.remove();
+                }
+            }
+        });
+
+
+
+
+        return list;
     }
 
 }

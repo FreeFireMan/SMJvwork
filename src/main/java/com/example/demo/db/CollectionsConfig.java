@@ -26,15 +26,15 @@ public class CollectionsConfig {
     @Autowired
     private MongoTemplate mongoTemplate;
 
-   /* @PostConstruct
+    @PostConstruct
     public void initIndexes() {
-        mongoTemplate.indexOps(COLL_CATEGORIES).ensureIndex(new Index().on("_id", Sort.Direction.ASC).unique());
+        mongoTemplate.indexOps(COLL_CATEGORIES).ensureIndex(new Index().on("id", Sort.Direction.ASC).unique());
         mongoTemplate.indexOps(COLL_CATEGORIES).ensureIndex(new Index().on("parentId", Sort.Direction.ASC));
 
-        mongoTemplate.indexOps(COLL_PRODUCTS_SHORT).ensureIndex(new Index().on("_id", Sort.Direction.ASC).unique());
+        mongoTemplate.indexOps(COLL_PRODUCTS_SHORT).ensureIndex(new Index().on("id", Sort.Direction.ASC).unique());
         mongoTemplate.indexOps(COLL_PRODUCTS_SHORT).ensureIndex(new Index().on("categoryId", Sort.Direction.ASC));
 
-        mongoTemplate.indexOps(COLL_PRODUCTS_LONG).ensureIndex(new Index().on("_id", Sort.Direction.ASC).unique());
+        mongoTemplate.indexOps(COLL_PRODUCTS_LONG).ensureIndex(new Index().on("id", Sort.Direction.ASC).unique());
         mongoTemplate.indexOps(COLL_PRODUCTS_LONG).ensureIndex(new Index().on("categoryId", Sort.Direction.ASC));
-    }*/
+    }
 }

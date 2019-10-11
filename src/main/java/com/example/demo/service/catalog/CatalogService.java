@@ -18,9 +18,9 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import static com.example.demo.db.CollectionsConfig.*;
 
@@ -54,6 +54,10 @@ public class CatalogService {
         final List<ObjectNode> longProds = new ArrayList<>();
         final FilterConfig filterConfig = new FilterConfig();
         final String[] str = {null};
+        Set<String> duplicates = new HashSet<>();
+        Set<String> uniques = new HashSet<>();
+
+
 
         // final Optional<CategoryNode> catalog = fetchService.fetchCatalog(70037, n -> { //for lego
         final Optional<CategoryNode> catalog = fetchService.fetchCatalog(118, n -> {
@@ -76,8 +80,40 @@ public class CatalogService {
             mongoTemplate.bulkOps(BulkOperations.BulkMode.ORDERED, COLL_CATEGORIES).insert(categories).execute();
 
         mongoTemplate.findAllAndRemove(new Query(), COLL_PRODUCTS_SHORT);
-        if (!shortProds.isEmpty())
+        if (!shortProds.isEmpty()){
+            for (ObjectNode t : shortProds){
+                if(!uniques.add(t.get("id").asText())) {
+                    duplicates.add(t.get("id").asText());
+                }
+            }
+          /*  duplicates=shortProds.stream()
+               .filter(n->!uniques.add(n.get("id").asText()))
+               .collect(Collectors.toSet());*/
+
+            System.out.println(duplicates.toString());
+            duplicates.forEach(n->{
+                String categoryPath= null;
+                Iterator<ObjectNode> t = shortProds.iterator();
+                while (t.hasNext()) {
+
+                    ObjectNode node = t.next();
+                    String id = node.get("id").asText();
+
+                    if (n.equals(id) && categoryPath != null){
+                        String temp = node.get("breadcrumbs").asText()+categoryPath;
+                        node.put("breadcrumbs",temp);
+                    }
+                    if(n.equals(id) && categoryPath == null){
+                        categoryPath = node.get("breadcrumbs").asText();
+                        t.remove();
+                    }
+                }
+            });
+           
+
             mongoTemplate.bulkOps(BulkOperations.BulkMode.ORDERED, COLL_PRODUCTS_SHORT).insert(shortProds).execute();
+        }
+        System.out.println("------------------------------------------------------------------------------------------");
 
         mongoTemplate.findAllAndRemove(new Query(), COLL_PRODUCTS_LONG);
         if (!longProds.isEmpty())

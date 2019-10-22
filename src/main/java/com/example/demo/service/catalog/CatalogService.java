@@ -19,8 +19,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
 
 import static com.example.demo.db.CollectionsConfig.*;
 
@@ -44,9 +42,6 @@ public class CatalogService {
     @Autowired
     private ProductService productService;
 
-    private String imageStore = "http://localhost:8080/";
-    //private String dir = "upload//lego//"; //for lego
-    private String dir = "upload/tpv/";
 
     public void fetchAndUpdate() {
         final List<ObjectNode> categories = new ArrayList<>();
@@ -54,8 +49,6 @@ public class CatalogService {
         final List<ObjectNode> longProds = new ArrayList<>();
         final FilterConfig filterConfig = new FilterConfig();
         final String[] str = {null};
-
-
 
 
         // final Optional<CategoryNode> catalog = fetchService.fetchCatalog(70037, n -> { //for lego
@@ -79,7 +72,7 @@ public class CatalogService {
             mongoTemplate.bulkOps(BulkOperations.BulkMode.ORDERED, COLL_CATEGORIES).insert(categories).execute();
 
         mongoTemplate.findAllAndRemove(new Query(), COLL_PRODUCTS_SHORT);
-        if (!shortProds.isEmpty()){
+        if (!shortProds.isEmpty()) {
             List<ObjectNode> shortProdsUniques = checkDuplicate(shortProds);
             mongoTemplate.bulkOps(BulkOperations.BulkMode.ORDERED, COLL_PRODUCTS_SHORT).insert(shortProdsUniques).execute();
         }
@@ -94,12 +87,9 @@ public class CatalogService {
         mongoTemplate.findAllAndRemove(new Query(), COLL_CATALOG);
         catalog.ifPresent(c -> mongoTemplate.save(c.toJson(), COLL_CATALOG));
 
-        System.out.println("findAndRemove");
-        mongoTemplate.dropCollection(COLL_FILTER);
-        // mongoTemplate.findAndRemove(new Query(),COLL_FILTER); //TODO разобраться почему java.lang.UnsupportedOperationException: Cannot set immutable property java.util.Optional.value!
-        System.out.println("Save");
+        mongoTemplate.findAllAndRemove(new Query(),COLL_FILTER);
         mongoTemplate.bulkOps(BulkOperations.BulkMode.ORDERED, COLL_FILTER).insert(filterConfig).execute();
-        //mongoTemplate.save(filterConfig,COLL_FILTER);
+
 
         productService.doSaveFilesForLong("instructions");
         productService.doSaveFilesForLong("certificates");
@@ -109,19 +99,19 @@ public class CatalogService {
         productService.doSaveImagesShot();
 
 
-
     }
 
     public Optional<ObjectNode> get() {
         List<ObjectNode> nodes = mongoTemplate.findAll(ObjectNode.class, COLL_CATALOG);
         return OptionalUtils.head(nodes);
     }
-    public List<ObjectNode> checkDuplicate(List<ObjectNode> list){
+
+    public List<ObjectNode> checkDuplicate(List<ObjectNode> list) {
         Set<String> duplicates = new HashSet<>();
         Set<String> uniques = new HashSet<>();
 
-        for (ObjectNode t : list){
-            if(!uniques.add(t.get("id").asText())) {
+        for (ObjectNode t : list) {
+            if (!uniques.add(t.get("id").asText())) {
                 duplicates.add(t.get("id").asText());
             }
         }
@@ -130,26 +120,24 @@ public class CatalogService {
                .collect(Collectors.toSet());*/
 
         System.out.println(duplicates.toString());
-        duplicates.forEach(n->{
-            String categoryPath= null;
+        duplicates.forEach(n -> {
+            String categoryPath = null;
             Iterator<ObjectNode> t = list.iterator();
             while (t.hasNext()) {
 
                 ObjectNode node = t.next();
                 String id = node.get("id").asText();
 
-                if (n.equals(id) && categoryPath != null){
-                    String temp = node.get("breadcrumbs").asText()+categoryPath;
-                    node.put("breadcrumbs",temp);
+                if (n.equals(id) && categoryPath != null) {
+                    String temp = node.get("breadcrumbs").asText() + categoryPath;
+                    node.put("breadcrumbs", temp);
                 }
-                if(n.equals(id) && categoryPath == null){
+                if (n.equals(id) && categoryPath == null) {
                     categoryPath = node.get("breadcrumbs").asText();
                     t.remove();
                 }
             }
         });
-
-
 
 
         return list;

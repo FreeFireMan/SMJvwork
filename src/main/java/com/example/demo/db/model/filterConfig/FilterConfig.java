@@ -24,7 +24,6 @@ public class FilterConfig {
                     optStr(gn, "name").ifPresent(name -> {
                         optNode(gn, "attributes", JsonNode::isArray).ifPresent(attributes -> {
                             if (groups == null) groups = new HashMap<>();
-
                             FilterGroup group = groups.getOrDefault(idcat, new FilterGroup(id, name));
                             attributes.forEach(attribute -> {
                                 if (attribute.isObject()) {
@@ -32,10 +31,7 @@ public class FilterConfig {
 
                                 }
                             });
-
                             groups.put(idcat, group);
-
-
                         });
                     });
                 });

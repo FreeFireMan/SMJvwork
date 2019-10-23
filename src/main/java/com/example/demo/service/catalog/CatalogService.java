@@ -1,9 +1,6 @@
 package com.example.demo.service.catalog;
 
-import com.example.demo.db.model.CategoryHolder;
-import com.example.demo.db.model.CategoryNode;
-import com.example.demo.db.model.LongProductHolder;
-import com.example.demo.db.model.ShortProductHolder;
+import com.example.demo.db.model.*;
 import com.example.demo.db.model.filterConfig.FilterConfig;
 import com.example.demo.service.fetch.FetchService;
 import com.example.demo.service.image.ImageService;
@@ -87,7 +84,8 @@ public class CatalogService {
         mongoTemplate.findAllAndRemove(new Query(), COLL_CATALOG);
         catalog.ifPresent(c -> mongoTemplate.save(c.toJson(), COLL_CATALOG));
 
-        mongoTemplate.findAllAndRemove(new Query(),COLL_FILTER);
+        //mongoTemplate.findAndRemove (new Query(),Filter.class,COLL_FILTER);
+        mongoTemplate.dropCollection (COLL_FILTER);
         mongoTemplate.bulkOps(BulkOperations.BulkMode.ORDERED, COLL_FILTER).insert(filterConfig).execute();
 
 
